@@ -1,0 +1,22 @@
+{
+  "projects": {
+    "prod": "helpnet-prod",
+    "dev": "helpnet-3a519"
+  },
+  "targets": {
+    "helpnet-3a519": {
+      "hosting": {
+        "dev": [
+          "helpnet-bo"
+        ]
+      }
+    },
+    "helpnet-prod": {
+      "hosting": {
+        "prod": [
+          "helpnet-bo"
+        ]
+      }
+    }
+  }
+}

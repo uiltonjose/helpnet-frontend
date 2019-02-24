@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>HelpNet - Backoffice</title>
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+    <div id="container">
+
+        <div>
+            <input type="file" accept="image/*" capture="camera" id="fileButton" value="upload">
+            <progress value="0" max="100" id="uploader">0%</progress>
+            <p id="downloadOutput"></p>
+            <img id="imageOutput" style="width:80px" />
+            <p id="hiddenUrl" hidden></p>
+            <p id="statusUpload"></p>
+        </div>
+
+        <div id="providerContent" />
+        <div>
+            <!-- <form id="myForm"> -->
+            <input type="button" onclick="updateProvider()" value="Update Provider">
+            <!-- </form> -->
+        </div>
+
+    </div>
+
+</body>
+
+<script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-storage.js"></script>
+<script src="js/Upload.js"></script>
+
+</html>
+ No newline at end of file
