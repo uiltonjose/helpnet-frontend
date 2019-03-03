@@ -56,7 +56,8 @@ class ListNotifications extends Component {
     const url = listNotificationsAPI + providerId;
     get(url, resp => {
       if (resp !== "") {
-        const notificationsAll = JSON.parse(resp);
+        const respJson = JSON.parse(resp);
+        const notificationsAll = respJson.data;
         const columns = this.getColumnsNotifications(notificationsAll);
         const notificationsFiltered = this.getDataNotifications(
           notificationsAll
@@ -73,8 +74,8 @@ class ListNotifications extends Component {
 
   getColumnsNotifications = notificationsParam => {
     const columns = [];
-    if (Object.keys(notificationsParam).length > 0) {
-      Object.keys(notificationsParam.data[0]).forEach(key => {
+    if (Object.keys(notificationsParam[0]).length > 0) {
+      Object.keys(notificationsParam[0]).forEach(key => {
         if (key !== "_id") {
           columns.push({
             accessor: key,
@@ -87,9 +88,8 @@ class ListNotifications extends Component {
   };
 
   getDataNotifications = notificationsParam => {
-    const data = notificationsParam.data.map(item => {
+    const data = notificationsParam.map(item => {
       const _id = new Chance().guid();
-
       const date = new Date(item.Data_de_Envio);
       const formatTemplate = "DD-MM-YYYY HH:mm";
       const timeZone = { timeZone: "America/Recife" }; //TODO: The Improvement is to get timezone from the Server.

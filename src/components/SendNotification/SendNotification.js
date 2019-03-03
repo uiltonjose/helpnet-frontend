@@ -9,10 +9,12 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 
 import { get, post } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
+import { getElementById } from "../../util/Util";
 
 import { showMessageOK } from "../../util/AlertDialogUtil";
 
 const listCustomersByProviderIdAPI = Api.listCustomerByProviderId;
+const listSugestionsNotificationsAPI = Api.listSugestionsNotifications;
 const sendNotificationAPI = Api.sendNotification;
 const CheckboxTable = checkboxHOC(ReactTable);
 
@@ -29,11 +31,14 @@ class SendNotification extends Component {
       errorMessage: "",
       providerId: "",
       userId: "",
-      blockOpenNewOS: false
+      blockOpenNewOS: false,
+      sugestionSelected: "",
+      listSugestions: []
     };
 
     this.handleChangeTitle = this.handleChangeTitle.bind(this);
     this.handleChangeMessage = this.handleChangeMessage.bind(this);
+    this.handleChangeSugestion = this.handleChangeSugestion.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.handleBlockOpenOS = this.handleBlockOpenOS.bind(this);
@@ -61,19 +66,33 @@ class SendNotification extends Component {
 
   componentDidMount() {
     this.loadCustomers();
+    this.loadSugestions();
   }
+
+  loadSugestions = () => {
+    const url = listSugestionsNotificationsAPI;
+    get(url, resp => {
+      if (resp !== "") {
+        const jsonResp = JSON.parse(resp);
+        const listSugestions = jsonResp.data;
+        this.setState({ listSugestions });
+      } else {
+        this.unavailableServiceAlert();
+      }
+    });
+  };
 
   loadCustomers = () => {
     const providerId = this.state.userInfo["provedor_id"];
     const userId = this.state.userInfo["id"];
 
     this.setState({ providerId, userId });
-
     const url = listCustomersByProviderIdAPI + providerId;
 
     get(url, resp => {
       if (resp !== "") {
-        const customersAll = JSON.parse(resp);
+        const jsonResp = JSON.parse(resp);
+        const customersAll = jsonResp.message;
         const columns = this.getColumnsCustomers(customersAll);
         const customersFiltered = this.getDataCustomers(customersAll);
         this.setState({
@@ -230,6 +249,21 @@ class SendNotification extends Component {
     this.setState({ message: event.target.value });
   }
 
+  handleChangeSugestion(event) {
+    this.sugestionSelected = getElementById(
+      this.state.listSugestions,
+      event.target.value
+    );
+
+    if (this.sugestionSelected !== undefined) {
+      this.setState({ title: this.sugestionSelected.TITULO });
+      this.setState({ message: this.sugestionSelected.DESCRICAO });
+    } else {
+      this.setState({ title: "" });
+      this.setState({ message: "" });
+    }
+  }
+
   handleSubmit(event) {
     this.builderPushNotification();
     event.preventDefault();
@@ -288,7 +322,7 @@ class SendNotification extends Component {
   render() {
     const { toggleSelection, toggleAll, isSelected } = this;
     let { columns, selectAll } = this.state;
-    if (typeof columns === "undefined") {
+    if (columns === undefined) {
       columns = [];
     }
     const checkboxProps = {
@@ -334,6 +368,23 @@ class SendNotification extends Component {
             <div className="wrapper right">
               <div className="right" />
             </div>
+          </div>
+          <div align="right" className="topnav search-container margin10">
+            <label className="bold">Sugestões:{"\u00A0"} </label>
+            <select
+              className=".form-control right"
+              onChange={this.handleChangeSugestion}
+              value={this.state.sugestion}
+            >
+              <option>
+                {"Selecione uma sugestão ou informe o texto manual"}
+              </option>
+              {this.state.listSugestions.map(item => (
+                <option key={item.ID} value={item.ID}>
+                  {item.TITULO}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="container">
             <div className="form-group bold">
@@ -402,5 +453,4 @@ class SendNotification extends Component {
     );
   }
 }
-
 export default SendNotification;

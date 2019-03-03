@@ -7,7 +7,8 @@ const apis = {
   listProviders: "api/provider/listProviders",
   addUser: "api/user/add",
   updateUser: "api/user/updateStatus",
-  getUserInfo: "api/user/info?userLogin="
+  getUserInfo: "api/user/info?userLogin=",
+  listSugestionsNotifications: "api/notification/listSugestionsNotifications"
 };
 
 export default apis;
