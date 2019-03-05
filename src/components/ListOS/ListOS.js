@@ -58,7 +58,8 @@ class ListOSs extends Component {
     const url = listOSsByProviderId + providerId;
     get(url, resp => {
       if (resp !== "") {
-        const ossAll = JSON.parse(resp);
+        const respJson = JSON.parse(resp);
+        const ossAll = respJson.message;
         const columns = this.getColumnsOSs(ossAll);
         const ossFiltered = this.getDataOSs(ossAll);
         this.setState({
