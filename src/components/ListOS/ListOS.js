@@ -11,10 +11,10 @@ import { formatToTimeZone } from "date-fns-timezone";
 import { get } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
 
-const listOSsByProviderId = Api.listOSsByProviderId;
+const listOsByProviderId = Api.listOsByProviderId;
 const CheckboxTable = checkboxHOC(ReactTable);
 
-class ListOSs extends Component {
+class ListOS extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,6 +42,20 @@ class ListOSs extends Component {
     });
   };
 
+  failLoadOsList = () => {
+    confirmAlert({
+      title: "",
+      message:
+        "Falha ao tentar carregar a lista das Ordem de Serviços. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+      buttons: [
+        {
+          label: "OK",
+          onClick: () => console.log("Connection refusied")
+        }
+      ]
+    });
+  };
+
   componentWillMount() {
     const savedUserInfo = localStorage.getItem("userInfo");
     const userInfo = JSON.parse(savedUserInfo);
@@ -55,24 +69,28 @@ class ListOSs extends Component {
   loadOSs = () => {
     const providerId = this.state.userInfo["provedor_id"];
     this.setState({ providerId });
-    const url = listOSsByProviderId + providerId;
+    const url = `${listOsByProviderId}${providerId}`;
     get(url, resp => {
       if (resp !== "") {
-        const respJson = JSON.parse(resp);
-        const ossAll = respJson.message;
-        const columns = this.getColumnsOSs(ossAll);
-        const ossFiltered = this.getDataOSs(ossAll);
-        this.setState({
-          ossFiltered,
-          columns
-        });
+        const jsonResponse = JSON.parse(resp);
+        if (jsonResponse) {
+          const listOS = jsonResponse.message;
+          const columns = this.getColumnsOS(listOS);
+          const ossFiltered = this.getDataOS(listOS);
+          this.setState({
+            ossFiltered,
+            columns
+          });
+        } else {
+          this.failLoadOsList();
+        }
       } else {
         this.unavailableServiceAlert();
       }
     });
   };
 
-  getColumnsOSs = ossParam => {
+  getColumnsOS = ossParam => {
     const columns = [];
     if (Object.keys(ossParam).length > 0) {
       Object.keys(ossParam[0]).forEach(key => {
@@ -87,7 +105,7 @@ class ListOSs extends Component {
     return columns;
   };
 
-  getDataOSs = ossParam => {
+  getDataOS = ossParam => {
     const data = ossParam.map(item => {
       const _id = new Chance().guid();
 
@@ -197,4 +215,4 @@ class ListOSs extends Component {
   }
 }
 
-export default ListOSs;
+export default ListOS;
