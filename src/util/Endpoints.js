@@ -8,7 +8,8 @@ const apis = {
   addUser: "api/user/add",
   updateUser: "api/user/updateStatus",
   getUserInfo: "api/user/info?userLogin=",
-  listSugestionsNotifications: "api/notification/listSugestionsNotifications"
+  listDefaultMessageForNotification:
+    "api/notification/listDefaultMessageForNotification"
 };
 
 export default apis;

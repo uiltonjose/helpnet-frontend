@@ -14,7 +14,8 @@ import { getElementById } from "../../util/Util";
 import { showMessageOK } from "../../util/AlertDialogUtil";
 
 const listCustomersByProviderIdAPI = Api.listCustomerByProviderId;
-const listSugestionsNotificationsAPI = Api.listSugestionsNotifications;
+const listDefaultMessageForNotificationAPI =
+  Api.listDefaultMessageForNotification;
 const sendNotificationAPI = Api.sendNotification;
 const CheckboxTable = checkboxHOC(ReactTable);
 
@@ -32,13 +33,15 @@ class SendNotification extends Component {
       providerId: "",
       userId: "",
       blockOpenNewOS: false,
-      sugestionSelected: "",
-      listSugestions: []
+      defaultMessageSelected: "",
+      listDefaultMessages: []
     };
 
     this.handleChangeTitle = this.handleChangeTitle.bind(this);
     this.handleChangeMessage = this.handleChangeMessage.bind(this);
-    this.handleChangeSugestion = this.handleChangeSugestion.bind(this);
+    this.handleChangeDefaultMessage = this.handleChangeDefaultMessage.bind(
+      this
+    );
     this.handleSubmit = this.handleSubmit.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.handleBlockOpenOS = this.handleBlockOpenOS.bind(this);
@@ -66,16 +69,16 @@ class SendNotification extends Component {
 
   componentDidMount() {
     this.loadCustomers();
-    this.loadSugestions();
+    this.loadDefaultMessages();
   }
 
-  loadSugestions = () => {
-    const url = listSugestionsNotificationsAPI;
+  loadDefaultMessages = () => {
+    const url = listDefaultMessageForNotificationAPI;
     get(url, resp => {
       if (resp !== "") {
         const jsonResp = JSON.parse(resp);
-        const listSugestions = jsonResp.data;
-        this.setState({ listSugestions });
+        const listDefaultMessages = jsonResp.data;
+        this.setState({ listDefaultMessages });
       } else {
         this.unavailableServiceAlert();
       }
@@ -249,15 +252,15 @@ class SendNotification extends Component {
     this.setState({ message: event.target.value });
   }
 
-  handleChangeSugestion(event) {
-    this.sugestionSelected = getElementById(
-      this.state.listSugestions,
+  handleChangeDefaultMessage(event) {
+    this.defaultMessageSelected = getElementById(
+      this.state.listDefaultMessages,
       event.target.value
     );
 
-    if (this.sugestionSelected !== undefined) {
-      this.setState({ title: this.sugestionSelected.TITULO });
-      this.setState({ message: this.sugestionSelected.DESCRICAO });
+    if (this.defaultMessageSelected !== undefined) {
+      this.setState({ title: this.defaultMessageSelected.TITULO });
+      this.setState({ message: this.defaultMessageSelected.DESCRICAO });
     } else {
       this.setState({ title: "" });
       this.setState({ message: "" });
@@ -373,13 +376,13 @@ class SendNotification extends Component {
             <label className="bold">Sugestões:{"\u00A0"} </label>
             <select
               className=".form-control right"
-              onChange={this.handleChangeSugestion}
-              value={this.state.sugestion}
+              onChange={this.handleChangeDefaultMessage}
+              value={this.defaultMessage}
             >
               <option>
                 {"Selecione uma sugestão ou informe o texto manual"}
               </option>
-              {this.state.listSugestions.map(item => (
+              {this.state.listDefaultMessages.map(item => (
                 <option key={item.ID} value={item.ID}>
                   {item.TITULO}
                 </option>
