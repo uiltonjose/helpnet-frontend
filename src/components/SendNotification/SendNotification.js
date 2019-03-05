@@ -61,6 +61,20 @@ class SendNotification extends Component {
     });
   };
 
+  failLoadCustomersAlert = () => {
+    confirmAlert({
+      title: "",
+      message:
+        "Falha ao tentar carregar a lista dos clientes. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+      buttons: [
+        {
+          label: "OK",
+          onClick: () => console.log("Connection refusied")
+        }
+      ]
+    });
+  };
+
   componentWillMount() {
     const savedUserInfo = localStorage.getItem("userInfo");
     const userInfo = JSON.parse(savedUserInfo);
@@ -90,18 +104,22 @@ class SendNotification extends Component {
     const userId = this.state.userInfo["id"];
 
     this.setState({ providerId, userId });
-    const url = listCustomersByProviderIdAPI + providerId;
+    const url = `${listCustomersByProviderIdAPI}${providerId}`;
 
     get(url, resp => {
       if (resp !== "") {
         const jsonResp = JSON.parse(resp);
-        const customersAll = jsonResp.message;
-        const columns = this.getColumnsCustomers(customersAll);
-        const customersFiltered = this.getDataCustomers(customersAll);
-        this.setState({
-          customersFiltered,
-          columns
-        });
+        if (jsonResp) {
+          const listCustomer = jsonResp.message;
+          const columns = this.getColumnsCustomers(listCustomer);
+          const customersFiltered = this.getDataCustomers(listCustomer);
+          this.setState({
+            customersFiltered,
+            columns
+          });
+        } else {
+          this.failLoadCustomersAlert();
+        }
       } else {
         this.unavailableServiceAlert();
       }
