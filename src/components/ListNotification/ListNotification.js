@@ -53,7 +53,7 @@ class ListNotifications extends Component {
   loadNotifications = () => {
     const providerId = this.state.userInfo["provedor_id"];
     this.setState({ providerId });
-    const url = listNotificationsAPI + providerId;
+    const url = `${listNotificationsAPI}${providerId}`;
     get(url, resp => {
       if (resp !== "") {
         const respJson = JSON.parse(resp);

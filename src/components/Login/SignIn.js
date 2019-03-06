@@ -5,7 +5,7 @@ import { firebaseApp } from "../../firebase";
 import { get, put } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
 import { showMessageOK } from "../../util/AlertDialogUtil";
-
+import { confirmAlert } from "react-confirm-alert";
 class SignIn extends Component {
   constructor(props) {
     super(props);
@@ -49,8 +49,9 @@ class SignIn extends Component {
   };
 
   getUserInfo = () => {
-    const getUserInfoAPI =
-      Api.getUserInfo + encodeURIComponent(this.state.email);
+    const getUserInfoAPI = `${Api.getUserInfo}${encodeURIComponent(
+      this.state.email
+    )}`;
 
     get(getUserInfoAPI, resp => {
       const result = JSON.parse(resp);
@@ -80,22 +81,37 @@ class SignIn extends Component {
 
   loadProviders = () => {
     get(Api.listProviders, resp => {
-      const providers = JSON.parse(resp);
-      const providerContent = document.getElementById("providerContent");
+      const jsonResponse = JSON.parse(resp);
+      if (jsonResponse) {
+        const providers = jsonResponse.message;
+        const providerContent = document.getElementById("providerContent");
 
-      //Create and append select list
-      const selectList = document.createElement("select");
-      selectList.style["width"] = "100%";
-      selectList.style["height"] = "30px";
-      selectList.id = "mySelect";
-      providerContent.appendChild(selectList);
+        //Create and append select list
+        const selectList = document.createElement("select");
+        selectList.style["width"] = "100%";
+        selectList.style["height"] = "30px";
+        selectList.id = "mySelect";
+        providerContent.appendChild(selectList);
 
-      //Create and append the options
-      for (let i = 0; i < providers.length; i++) {
-        const option = document.createElement("option");
-        option.value = providers[i].ID;
-        option.text = providers[i].NOME;
-        selectList.appendChild(option);
+        //Create and append the options
+        for (let i = 0; i < providers.length; i++) {
+          const option = document.createElement("option");
+          option.value = providers[i].ID;
+          option.text = providers[i].NOME;
+          selectList.appendChild(option);
+        }
+      } else {
+        confirmAlert({
+          title: "",
+          message:
+            "Falha ao tentar carregar a lista dos Provedores. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+          buttons: [
+            {
+              label: "OK",
+              onClick: () => console.log("Connection refusied")
+            }
+          ]
+        });
       }
     });
   };
@@ -107,7 +123,7 @@ class SignIn extends Component {
     const userParams = {};
     userParams.userId = this.state.userInfo.id;
     userParams.confirmationCode = this.state.confirmationCode;
-    userParams.provedorId = selectedProvider;
+    userParams.providerId = selectedProvider;
 
     put(Api.updateUser, userParams, resp => {
       const result = JSON.parse(resp);
