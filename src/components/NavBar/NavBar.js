@@ -14,7 +14,7 @@ class NavBar extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     firebaseApp.auth().onAuthStateChanged(user => {
       if (user) {
         localStorage.setItem("isLogged", true);
