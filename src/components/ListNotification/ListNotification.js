@@ -60,15 +60,17 @@ class ListNotifications extends Component {
       if (resp !== "") {
         const respJson = JSON.parse(resp);
         const notificationsAll = respJson.data;
-        const columns = this.getColumnsNotifications(notificationsAll);
-        const notificationsFiltered = this.getDataNotifications(
-          notificationsAll
-        );
-        this.setState({
-          notificationsFiltered,
-          columns,
-          isLoading: false
-        });
+        if (notificationsAll && notificationsAll.length > 0) {
+          const columns = this.getColumnsNotifications(notificationsAll);
+          const notificationsFiltered = this.getDataNotifications(
+            notificationsAll
+          );
+          this.setState({
+            notificationsFiltered,
+            columns
+          });
+        }
+        this.setState({ isLoading: false });
       } else {
         this.setState({ isLoading: false });
         this.unavailableServiceAlert();
@@ -78,7 +80,7 @@ class ListNotifications extends Component {
 
   getColumnsNotifications = notificationsParam => {
     const columns = [];
-    if (Object.keys(notificationsParam[0]).length > 0) {
+    if (notificationsParam && Object.keys(notificationsParam[0]).length > 0) {
       Object.keys(notificationsParam[0]).forEach(key => {
         if (key !== "_id") {
           columns.push({
