@@ -6,8 +6,8 @@ import { confirmAlert } from "react-confirm-alert";
 import "react-table/react-table.css";
 import "rc-checkbox/assets/index.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import Spinner from "../ui/Spinner";
 import { formatToTimeZone } from "date-fns-timezone";
-
 import { get } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
 
@@ -22,7 +22,8 @@ class ListNotifications extends Component {
       selection: [],
       selectAll: false,
       errorMessage: "",
-      providerId: ""
+      providerId: "",
+      isLoading: false
     };
   }
 
@@ -47,6 +48,7 @@ class ListNotifications extends Component {
   }
 
   componentDidMount() {
+    this.setState({ isLoading: true });
     this.loadNotifications();
   }
 
@@ -64,9 +66,11 @@ class ListNotifications extends Component {
         );
         this.setState({
           notificationsFiltered,
-          columns
+          columns,
+          isLoading: false
         });
       } else {
+        this.setState({ isLoading: false });
         this.unavailableServiceAlert();
       }
     });
@@ -171,28 +175,34 @@ class ListNotifications extends Component {
             {this.state.errorMessage}
           </div>
         )}
-        <div className="container">
-          <div className="text-center">
-            <h4 className="title bold">Notificações enviadas</h4>
+        {this.state.isLoading ? (
+          <div className="spinner-loading-page">
+            <Spinner />
           </div>
-          <CheckboxTable
-            ref={r => (this.checkboxTable = r)}
-            filterable={true}
-            defaultFilterMethod={this.defaultFilter}
-            minRows={0}
-            data={this.state.notificationsFiltered}
-            columns={columns}
-            {...checkboxProps}
-            previousText={"Anterior"}
-            nextText={"Próximo"}
-            defaultPageSize={10}
-            loadingText={"Carregando..."}
-            noDataText={"Lista vazia."}
-            pageText={"Página"}
-            ofText={"de"}
-            rowsText={"linhas"}
-          />
-        </div>
+        ) : (
+          <div className="container">
+            <div className="text-center">
+              <h4 className="title bold">Notificações enviadas</h4>
+            </div>
+            <CheckboxTable
+              ref={r => (this.checkboxTable = r)}
+              filterable={true}
+              defaultFilterMethod={this.defaultFilter}
+              minRows={0}
+              data={this.state.notificationsFiltered}
+              columns={columns}
+              {...checkboxProps}
+              previousText={"Anterior"}
+              nextText={"Próximo"}
+              defaultPageSize={10}
+              loadingText={"Carregando..."}
+              noDataText={"Lista vazia."}
+              pageText={"Página"}
+              ofText={"de"}
+              rowsText={"linhas"}
+            />
+          </div>
+        )}
       </form>
     );
   }

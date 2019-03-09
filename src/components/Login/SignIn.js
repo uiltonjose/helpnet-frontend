@@ -17,12 +17,12 @@ class SignIn extends Component {
       errorMessage: "",
       pendingRegister: false,
       confirmationCode: "",
-      loading: false
+      isLoading: false
     };
   }
 
   signInHandler = () => {
-    this.setState({ errorMessage: "", loading: true });
+    this.setState({ errorMessage: "", isLoading: true });
     let { email, password } = this.state;
 
     firebaseApp
@@ -48,7 +48,7 @@ class SignIn extends Component {
             message = "Falha no Login. Por favor, tente mais tarde.";
             break;
         }
-        this.setState({ errorMessage: message, loading: false });
+        this.setState({ errorMessage: message, isLoading: false });
       });
   };
 
@@ -81,7 +81,7 @@ class SignIn extends Component {
 
   handleGenericError = () => {
     // This error occur in our side, or CMS problem or webservice.
-    this.setState({ loading: false });
+    this.setState({ isLoading: false });
     showMessageOK(
       "",
       "Falha no login. Por favor, tente novamente ou se o erro persistir, contactar o HelpNet suporte.",
@@ -180,7 +180,7 @@ class SignIn extends Component {
                 }
               />
 
-              {this.state.loading ? (
+              {this.state.isLoading ? (
                 <Spinner />
               ) : (
                 <button
