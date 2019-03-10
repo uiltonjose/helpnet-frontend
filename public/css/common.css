@@ -1,18 +1,4 @@
-﻿
-/*
-// Tela Login
-*/
-
-
-
-
-
-
-/*
-// Tela Faa
-*/
-
-.result{
+﻿.result {
   width: 30%;
   background-color: #3e8e41;
   box-shadow: 0 5px #666;
@@ -22,34 +8,33 @@
   cursor: pointer;
   outline: none;
   color: #fff;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   border: none;
   border-radius: 15px;
   box-shadow: 0 9px #999;
-  margin:20px;
+  margin: 20px;
 }
 
 img {
-  max-width:25px;
-  max-height:25px;
+  max-width: 25px;
+  max-height: 25px;
   width: auto;
   height: auto;
   margin: 1px;
 }
 
-
 .topnav .search-container {
   float: right;
 }
 
-.topnav  input[type=text] {
+.topnav input[type="text"] {
   padding: 6px;
   margin-top: 8px;
   font-size: 17px;
   border: none;
 }
 
-.modal-magin{
+.modal-magin {
   margin: 20px;
 }
 
@@ -69,53 +54,60 @@ img {
   width: 70%;
 }
 
-.invisible{
-display: none;	
+.invisible {
+  display: none;
 }
 
-.center{
-text-align: center;
+.center {
+  text-align: center;
 }
 
-.button{
-	margin: 20px;
+.button {
+  margin: 20px;
 }
-.bold{
-  font-weight: bold; 
-}
-
-.title{
-  margin: 5ex
+.bold {
+  font-weight: bold;
 }
 
-.linha{		
-padding:5px;		
-clear:both;	
-}	
-
-.perguntas{		
-width:50%;		
-float:left;	}	
-
-.wrapper{
-  position:relative;
-  
-}
-.right,.left{
-  width:50%; ; display:inline-block;
+.title {
+  margin: 5ex;
 }
 
-.left{
-  float: left;  
-}
-.right{
-  float: right;;
+.linha {
+  padding: 5px;
+  clear: both;
 }
 
-.respostas{		
-width:50%;
-float:left;		}	
+.perguntas {
+  width: 50%;
+  float: left;
+}
 
-.text{ 
-font-size: 16px;
+.wrapper {
+  position: relative;
+}
+.right,
+.left {
+  width: 50%;
+  display: inline-block;
+}
+
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+
+.respostas {
+  width: 50%;
+  float: left;
+}
+
+.text {
+  font-size: 16px;
+}
+
+.spinner-loading-page {
+  margin-top: 20px;
 }

@@ -5,6 +5,8 @@ import { firebaseApp } from "../../firebase";
 import { get, put } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
 import { showMessageOK } from "../../util/AlertDialogUtil";
+import { confirmAlert } from "react-confirm-alert";
+import Spinner from "../ui/Spinner";
 
 class SignIn extends Component {
   constructor(props) {
@@ -14,13 +16,15 @@ class SignIn extends Component {
       password: "",
       errorMessage: "",
       pendingRegister: false,
-      confirmationCode: ""
+      confirmationCode: "",
+      isLoading: false
     };
   }
 
   signInHandler = () => {
-    this.setState({ errorMessage: "" });
+    this.setState({ errorMessage: "", isLoading: true });
     let { email, password } = this.state;
+
     firebaseApp
       .auth()
       .signInWithEmailAndPassword(encodeURI(email), encodeURI(password))
@@ -44,58 +48,82 @@ class SignIn extends Component {
             message = "Falha no Login. Por favor, tente mais tarde.";
             break;
         }
-        this.setState({ errorMessage: message });
+        this.setState({ errorMessage: message, isLoading: false });
       });
   };
 
   getUserInfo = () => {
-    const getUserInfoAPI =
-      Api.getUserInfo + encodeURIComponent(this.state.email);
+    const getUserInfoAPI = `${Api.getUserInfo}${encodeURIComponent(
+      this.state.email
+    )}`;
 
     get(getUserInfoAPI, resp => {
-      const result = JSON.parse(resp);
-      if (result.code === 200 || result.code === 304) {
-        const userInfoData = result.userInfo;
-
-        if (userInfoData.status === "Ativo") {
-          localStorage.setItem("isLogged", true);
-          localStorage.setItem("userInfo", JSON.stringify(userInfoData));
-          this.props.history.push("/home");
+      if (resp) {
+        const result = JSON.parse(resp);
+        if (result.code === 200 || result.code === 304) {
+          const userInfoData = result.userInfo;
+          if (userInfoData.status === "Ativo") {
+            localStorage.setItem("isLogged", true);
+            localStorage.setItem("userInfo", JSON.stringify(userInfoData));
+            this.props.history.push("/home");
+          } else {
+            this.setState({ pendingRegister: true, userInfo: userInfoData });
+            this.loadProviders();
+          }
         } else {
-          this.setState({ pendingRegister: true, userInfo: userInfoData });
-          this.loadProviders();
+          this.handleGenericError();
         }
       } else {
-        // This error occur in our side, or CMS problem or webservice.
-        showMessageOK(
-          "",
-          "Falha no login. Por favor, tente novamente ou se o erro persistir, contactar o HelpNet suporte.",
-          () => {
-            // for now, just ignore it.
-          }
-        );
+        this.handleGenericError();
       }
     });
   };
 
+  handleGenericError = () => {
+    // This error occur in our side, or CMS problem or webservice.
+    this.setState({ isLoading: false });
+    showMessageOK(
+      "",
+      "Falha no login. Por favor, tente novamente ou se o erro persistir, contactar o HelpNet suporte.",
+      () => {
+        // for now, just ignore it.
+      }
+    );
+  };
+
   loadProviders = () => {
     get(Api.listProviders, resp => {
-      const providers = JSON.parse(resp);
-      const providerContent = document.getElementById("providerContent");
+      const jsonResponse = JSON.parse(resp);
+      if (jsonResponse) {
+        const providers = jsonResponse.message;
+        const providerContent = document.getElementById("providerContent");
 
-      //Create and append select list
-      const selectList = document.createElement("select");
-      selectList.style["width"] = "100%";
-      selectList.style["height"] = "30px";
-      selectList.id = "mySelect";
-      providerContent.appendChild(selectList);
+        //Create and append select list
+        const selectList = document.createElement("select");
+        selectList.style["width"] = "100%";
+        selectList.style["height"] = "30px";
+        selectList.id = "mySelect";
+        providerContent.appendChild(selectList);
 
-      //Create and append the options
-      for (let i = 0; i < providers.length; i++) {
-        const option = document.createElement("option");
-        option.value = providers[i].ID;
-        option.text = providers[i].NOME;
-        selectList.appendChild(option);
+        //Create and append the options
+        for (let i = 0; i < providers.length; i++) {
+          const option = document.createElement("option");
+          option.value = providers[i].ID;
+          option.text = providers[i].NOME;
+          selectList.appendChild(option);
+        }
+      } else {
+        confirmAlert({
+          title: "",
+          message:
+            "Falha ao tentar carregar a lista dos Provedores. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+          buttons: [
+            {
+              label: "OK",
+              onClick: () => console.log("Connection refusied")
+            }
+          ]
+        });
       }
     });
   };
@@ -107,7 +135,7 @@ class SignIn extends Component {
     const userParams = {};
     userParams.userId = this.state.userInfo.id;
     userParams.confirmationCode = this.state.confirmationCode;
-    userParams.provedorId = selectedProvider;
+    userParams.providerId = selectedProvider;
 
     put(Api.updateUser, userParams, resp => {
       const result = JSON.parse(resp);
@@ -151,13 +179,18 @@ class SignIn extends Component {
                   this.setState({ password: event.target.value })
                 }
               />
-              <button
-                className="btn btn-lg btn-primary btn-block btn-signin"
-                type="button"
-                onClick={() => this.signInHandler()}
-              >
-                Logar
-              </button>
+
+              {this.state.isLoading ? (
+                <Spinner />
+              ) : (
+                <button
+                  className="btn btn-lg btn-primary btn-block btn-signin"
+                  type="button"
+                  onClick={() => this.signInHandler()}
+                >
+                  Logar
+                </button>
+              )}
             </div>
 
             <Link className="general-link" to={"/forgotpassword"}>

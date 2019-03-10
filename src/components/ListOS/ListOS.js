@@ -1,20 +1,20 @@
 ﻿import React, { Component } from "react";
 import ReactTable from "react-table";
 import checkboxHOC from "react-table/lib/hoc/selectTable";
-import Chance from "chance";
 import { confirmAlert } from "react-confirm-alert";
 import "react-table/react-table.css";
 import "rc-checkbox/assets/index.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import Spinner from "../ui/Spinner";
+import Chance from "chance";
 import { formatToTimeZone } from "date-fns-timezone";
-
 import { get } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
 
-const listOSsByProviderId = Api.listOSsByProviderId;
+const listOsByProviderId = Api.listOsByProviderId;
 const CheckboxTable = checkboxHOC(ReactTable);
 
-class ListOSs extends Component {
+class ListOS extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,7 +24,8 @@ class ListOSs extends Component {
       activeOSsChecked: "S",
       defaulterOSsChecked: "S",
       errorMessage: "",
-      providerId: ""
+      providerId: "",
+      isLoading: false
     };
   }
 
@@ -36,7 +37,25 @@ class ListOSs extends Component {
       buttons: [
         {
           label: "OK",
-          onClick: () => console.log("Connection refusied")
+          onClick: () => {
+            this.setState({ isLoading: false });
+          }
+        }
+      ]
+    });
+  };
+
+  failLoadOsList = () => {
+    confirmAlert({
+      title: "",
+      message:
+        "Falha ao tentar carregar a lista das Ordem de Serviços. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+      buttons: [
+        {
+          label: "OK",
+          onClick: () => {
+            this.setState({ isLoading: false });
+          }
         }
       ]
     });
@@ -49,30 +68,36 @@ class ListOSs extends Component {
   }
 
   componentDidMount() {
+    this.setState({ isLoading: true });
     this.loadOSs();
   }
 
   loadOSs = () => {
     const providerId = this.state.userInfo["provedor_id"];
     this.setState({ providerId });
-    const url = listOSsByProviderId + providerId;
+    const url = `${listOsByProviderId}${providerId}`;
     get(url, resp => {
       if (resp !== "") {
-        const respJson = JSON.parse(resp);
-        const ossAll = respJson.message;
-        const columns = this.getColumnsOSs(ossAll);
-        const ossFiltered = this.getDataOSs(ossAll);
-        this.setState({
-          ossFiltered,
-          columns
-        });
+        const jsonResponse = JSON.parse(resp);
+        if (jsonResponse) {
+          const listOS = jsonResponse.message;
+          const columns = this.getColumnsOS(listOS);
+          const ossFiltered = this.getDataOS(listOS);
+          this.setState({
+            ossFiltered,
+            columns,
+            isLoading: false
+          });
+        } else {
+          this.failLoadOsList();
+        }
       } else {
         this.unavailableServiceAlert();
       }
     });
   };
 
-  getColumnsOSs = ossParam => {
+  getColumnsOS = ossParam => {
     const columns = [];
     if (Object.keys(ossParam).length > 0) {
       Object.keys(ossParam[0]).forEach(key => {
@@ -87,7 +112,7 @@ class ListOSs extends Component {
     return columns;
   };
 
-  getDataOSs = ossParam => {
+  getDataOS = ossParam => {
     const data = ossParam.map(item => {
       const _id = new Chance().guid();
 
@@ -170,31 +195,37 @@ class ListOSs extends Component {
             {this.state.errorMessage}
           </div>
         )}
-        <div className="container">
-          <div className="text-center">
-            <h4 className="title bold">Ordens de Serviço Registradas</h4>
+        {this.state.isLoading ? (
+          <div className="spinner-loading-page">
+            <Spinner />
           </div>
-          <CheckboxTable
-            ref={r => (this.checkboxTable = r)}
-            filterable={true}
-            defaultFilterMethod={this.defaultFilter}
-            minRows={0}
-            data={this.state.ossFiltered}
-            columns={columns}
-            {...checkboxProps}
-            previousText={"Anterior"}
-            nextText={"Próximo"}
-            defaultPageSize={10}
-            loadingText={"Carregando..."}
-            noDataText={"Lista vazia."}
-            pageText={"Página"}
-            ofText={"de"}
-            rowsText={"linhas"}
-          />
-        </div>
+        ) : (
+          <div className="container">
+            <div className="text-center">
+              <h4 className="title bold">Ordens de Serviço Registradas</h4>
+            </div>
+            <CheckboxTable
+              ref={r => (this.checkboxTable = r)}
+              filterable={true}
+              defaultFilterMethod={this.defaultFilter}
+              minRows={0}
+              data={this.state.ossFiltered}
+              columns={columns}
+              {...checkboxProps}
+              previousText={"Anterior"}
+              nextText={"Próximo"}
+              defaultPageSize={10}
+              loadingText={"Carregando..."}
+              noDataText={"Lista vazia."}
+              pageText={"Página"}
+              ofText={"de"}
+              rowsText={"linhas"}
+            />
+          </div>
+        )}
       </form>
     );
   }
 }
 
-export default ListOSs;
+export default ListOS;
