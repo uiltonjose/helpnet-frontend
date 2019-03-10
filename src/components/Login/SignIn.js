@@ -6,6 +6,8 @@ import { get, put } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
 import { showMessageOK } from "../../util/AlertDialogUtil";
 import { confirmAlert } from "react-confirm-alert";
+import Spinner from "../ui/Spinner";
+
 class SignIn extends Component {
   constructor(props) {
     super(props);
@@ -14,13 +16,15 @@ class SignIn extends Component {
       password: "",
       errorMessage: "",
       pendingRegister: false,
-      confirmationCode: ""
+      confirmationCode: "",
+      isLoading: false
     };
   }
 
   signInHandler = () => {
-    this.setState({ errorMessage: "" });
+    this.setState({ errorMessage: "", isLoading: true });
     let { email, password } = this.state;
+
     firebaseApp
       .auth()
       .signInWithEmailAndPassword(encodeURI(email), encodeURI(password))
@@ -44,7 +48,7 @@ class SignIn extends Component {
             message = "Falha no Login. Por favor, tente mais tarde.";
             break;
         }
-        this.setState({ errorMessage: message });
+        this.setState({ errorMessage: message, isLoading: false });
       });
   };
 
@@ -54,29 +58,37 @@ class SignIn extends Component {
     )}`;
 
     get(getUserInfoAPI, resp => {
-      const result = JSON.parse(resp);
-      if (result.code === 200 || result.code === 304) {
-        const userInfoData = result.userInfo;
-
-        if (userInfoData.status === "Ativo") {
-          localStorage.setItem("isLogged", true);
-          localStorage.setItem("userInfo", JSON.stringify(userInfoData));
-          this.props.history.push("/home");
+      if (resp) {
+        const result = JSON.parse(resp);
+        if (result.code === 200 || result.code === 304) {
+          const userInfoData = result.userInfo;
+          if (userInfoData.status === "Ativo") {
+            localStorage.setItem("isLogged", true);
+            localStorage.setItem("userInfo", JSON.stringify(userInfoData));
+            this.props.history.push("/home");
+          } else {
+            this.setState({ pendingRegister: true, userInfo: userInfoData });
+            this.loadProviders();
+          }
         } else {
-          this.setState({ pendingRegister: true, userInfo: userInfoData });
-          this.loadProviders();
+          this.handleGenericError();
         }
       } else {
-        // This error occur in our side, or CMS problem or webservice.
-        showMessageOK(
-          "",
-          "Falha no login. Por favor, tente novamente ou se o erro persistir, contactar o HelpNet suporte.",
-          () => {
-            // for now, just ignore it.
-          }
-        );
+        this.handleGenericError();
       }
     });
+  };
+
+  handleGenericError = () => {
+    // This error occur in our side, or CMS problem or webservice.
+    this.setState({ isLoading: false });
+    showMessageOK(
+      "",
+      "Falha no login. Por favor, tente novamente ou se o erro persistir, contactar o HelpNet suporte.",
+      () => {
+        // for now, just ignore it.
+      }
+    );
   };
 
   loadProviders = () => {
@@ -167,13 +179,18 @@ class SignIn extends Component {
                   this.setState({ password: event.target.value })
                 }
               />
-              <button
-                className="btn btn-lg btn-primary btn-block btn-signin"
-                type="button"
-                onClick={() => this.signInHandler()}
-              >
-                Logar
-              </button>
+
+              {this.state.isLoading ? (
+                <Spinner />
+              ) : (
+                <button
+                  className="btn btn-lg btn-primary btn-block btn-signin"
+                  type="button"
+                  onClick={() => this.signInHandler()}
+                >
+                  Logar
+                </button>
+              )}
             </div>
 
             <Link className="general-link" to={"/forgotpassword"}>

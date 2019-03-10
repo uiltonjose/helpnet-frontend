@@ -1,13 +1,13 @@
 ﻿import React, { Component } from "react";
 import ReactTable from "react-table";
 import checkboxHOC from "react-table/lib/hoc/selectTable";
-import Chance from "chance";
 import { confirmAlert } from "react-confirm-alert";
 import "react-table/react-table.css";
 import "rc-checkbox/assets/index.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import Spinner from "../ui/Spinner";
+import Chance from "chance";
 import { formatToTimeZone } from "date-fns-timezone";
-
 import { get } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
 
@@ -24,7 +24,8 @@ class ListOS extends Component {
       activeOSsChecked: "S",
       defaulterOSsChecked: "S",
       errorMessage: "",
-      providerId: ""
+      providerId: "",
+      isLoading: false
     };
   }
 
@@ -36,7 +37,9 @@ class ListOS extends Component {
       buttons: [
         {
           label: "OK",
-          onClick: () => console.log("Connection refusied")
+          onClick: () => {
+            this.setState({ isLoading: false });
+          }
         }
       ]
     });
@@ -50,7 +53,9 @@ class ListOS extends Component {
       buttons: [
         {
           label: "OK",
-          onClick: () => console.log("Connection refusied")
+          onClick: () => {
+            this.setState({ isLoading: false });
+          }
         }
       ]
     });
@@ -63,6 +68,7 @@ class ListOS extends Component {
   }
 
   componentDidMount() {
+    this.setState({ isLoading: true });
     this.loadOSs();
   }
 
@@ -79,7 +85,8 @@ class ListOS extends Component {
           const ossFiltered = this.getDataOS(listOS);
           this.setState({
             ossFiltered,
-            columns
+            columns,
+            isLoading: false
           });
         } else {
           this.failLoadOsList();
@@ -188,28 +195,34 @@ class ListOS extends Component {
             {this.state.errorMessage}
           </div>
         )}
-        <div className="container">
-          <div className="text-center">
-            <h4 className="title bold">Ordens de Serviço Registradas</h4>
+        {this.state.isLoading ? (
+          <div className="spinner-loading-page">
+            <Spinner />
           </div>
-          <CheckboxTable
-            ref={r => (this.checkboxTable = r)}
-            filterable={true}
-            defaultFilterMethod={this.defaultFilter}
-            minRows={0}
-            data={this.state.ossFiltered}
-            columns={columns}
-            {...checkboxProps}
-            previousText={"Anterior"}
-            nextText={"Próximo"}
-            defaultPageSize={10}
-            loadingText={"Carregando..."}
-            noDataText={"Lista vazia."}
-            pageText={"Página"}
-            ofText={"de"}
-            rowsText={"linhas"}
-          />
-        </div>
+        ) : (
+          <div className="container">
+            <div className="text-center">
+              <h4 className="title bold">Ordens de Serviço Registradas</h4>
+            </div>
+            <CheckboxTable
+              ref={r => (this.checkboxTable = r)}
+              filterable={true}
+              defaultFilterMethod={this.defaultFilter}
+              minRows={0}
+              data={this.state.ossFiltered}
+              columns={columns}
+              {...checkboxProps}
+              previousText={"Anterior"}
+              nextText={"Próximo"}
+              defaultPageSize={10}
+              loadingText={"Carregando..."}
+              noDataText={"Lista vazia."}
+              pageText={"Página"}
+              ofText={"de"}
+              rowsText={"linhas"}
+            />
+          </div>
+        )}
       </form>
     );
   }

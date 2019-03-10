@@ -3,6 +3,7 @@ import ReactTable from "react-table";
 import checkboxHOC from "react-table/lib/hoc/selectTable";
 import Chance from "chance";
 import { confirmAlert } from "react-confirm-alert";
+import "./sendNotification.css";
 import "react-table/react-table.css";
 import "rc-checkbox/assets/index.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
@@ -12,6 +13,7 @@ import Api from "../../util/Endpoints";
 import { getElementById } from "../../util/Util";
 
 import { showMessageOK } from "../../util/AlertDialogUtil";
+import Spinner from "../ui/Spinner";
 
 const listCustomersByProviderIdAPI = Api.listCustomerByProviderId;
 const listDefaultMessageForNotificationAPI =
@@ -34,7 +36,8 @@ class SendNotification extends Component {
       userId: "",
       blockOpenNewOS: false,
       defaultMessageSelected: "",
-      listDefaultMessages: []
+      listDefaultMessages: [],
+      isLoading: false
     };
 
     this.handleChangeTitle = this.handleChangeTitle.bind(this);
@@ -55,7 +58,9 @@ class SendNotification extends Component {
       buttons: [
         {
           label: "OK",
-          onClick: () => console.log("Connection refusied")
+          onClick: () => {
+            this.setState({ isLoading: false });
+          }
         }
       ]
     });
@@ -69,7 +74,9 @@ class SendNotification extends Component {
       buttons: [
         {
           label: "OK",
-          onClick: () => console.log("Connection refusied")
+          onClick: () => {
+            this.setState({ isLoading: false });
+          }
         }
       ]
     });
@@ -82,6 +89,7 @@ class SendNotification extends Component {
   }
 
   componentDidMount() {
+    this.setState({ isLoading: true });
     this.loadCustomers();
     this.loadDefaultMessages();
   }
@@ -115,7 +123,8 @@ class SendNotification extends Component {
           const customersFiltered = this.getDataCustomers(listCustomer);
           this.setState({
             customersFiltered,
-            columns
+            columns,
+            isLoading: false
           });
         } else {
           this.failLoadCustomersAlert();
@@ -210,7 +219,7 @@ class SendNotification extends Component {
   };
 
   sendMessage = () => {
-    this.setState({ errorMessage: "" });
+    this.setState({ errorMessage: "", isLoading: true });
     let errorMessage = "";
     let bodyNotification = this.builderPushNotification();
 
@@ -240,7 +249,7 @@ class SendNotification extends Component {
       errorMessage += "* O campo Conteúdo precisa ser informado";
     }
     if (errorMessage.length > 0) {
-      this.setState({ errorMessage });
+      this.setState({ errorMessage, isLoading: false });
       window.scrollTo(0, 0);
     } else {
       post(sendNotificationAPI, bodyNotification, function(resp) {
@@ -257,6 +266,7 @@ class SendNotification extends Component {
         }
         showMessageOK("", messageAlert, () => {
           window.location.reload();
+          this.setState({ isLoading: false });
         });
       });
     }
@@ -369,107 +379,117 @@ class SendNotification extends Component {
             {this.state.errorMessage}
           </div>
         )}
-        <div className="container">
-          <div className="text-center">
-            <h4 className="title bold">Envio de mensagens para clientes</h4>
+        {this.state.isLoading ? (
+          <div className="spinner-loading-page">
+            <Spinner />
           </div>
-          <div>
-            <div align="right" className="topnav search-container">
-              <button
-                onClick={this.sendMessage}
-                type="button"
-                id="buttonAction"
-                className="btn btn-primary"
-              >
-                {"Enviar Mensagem"}
-              </button>
-            </div>
-          </div>
-          <div className="text-center">
-            <div className="wrapper right">
-              <div className="right" />
-            </div>
-          </div>
-          <div align="right" className="topnav search-container margin10">
-            <label className="bold">Sugestões:{"\u00A0"} </label>
-            <select
-              className=".form-control right"
-              onChange={this.handleChangeDefaultMessage}
-              value={this.defaultMessage}
-            >
-              <option>
-                {"Selecione uma sugestão ou informe o texto manual"}
-              </option>
-              {this.state.listDefaultMessages.map(item => (
-                <option key={item.ID} value={item.ID}>
-                  {item.TITULO}
-                </option>
-              ))}
-            </select>
-          </div>
+        ) : (
           <div className="container">
-            <div className="form-group bold">
-              <label htmlFor="title">Título</label>
-              <input
-                value={this.state.title}
-                onChange={this.handleChangeTitle}
-                type="text"
-                className="form-control"
-                id="titleModal"
-                aria-describedby="titleHelp"
-                placeholder="Informe o título da mensagens"
-                required
-              />
-              <small id="titlelHelp" className="form-text text-muted">
-                * Esta informação é obrigatória, informe o assunto da mensagem
-              </small>
+            <div className="text-center">
+              <h4 className="title bold">Envio de mensagens para clientes</h4>
             </div>
-            <div className="form-group bold">
-              <label>Conteúdo</label>
-              <textarea
-                value={this.state.message}
-                onChange={this.handleChangeMessage}
-                rows="3"
-                className="form-control"
-                id="conteudoModal"
-                aria-describedby="conteudoHelp"
-                placeholder="Informe o conteúdo da mensagem"
-                required
-              />
-              <small id="conteudoHelp" className="form-text text-muted">
-                * Esta informação é obrigatória, informe a mensagem que será
-                enviada
-              </small>
+            <div>
+              <div align="right" className="topnav search-container">
+                {this.state.isLoading ? (
+                  <Spinner styleCss="d-flex justify-content-end" />
+                ) : (
+                  <button
+                    onClick={this.sendMessage}
+                    type="button"
+                    id="buttonAction"
+                    className="btn btn-primary"
+                  >
+                    Enviar Mensagem
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="textBlock form-group bold">
-              <input
-                type="checkbox"
-                defaultChecked={this.state.blockOpenNewOS}
-                onChange={this.handleBlockOpenOS}
-              />
-              <label className="margin10">
-                Bloquear abertura de OSs para os clientes selecionados
-              </label>
+            <div className="text-center">
+              <div className="wrapper right">
+                <div className="right" />
+              </div>
             </div>
-            <CheckboxTable
-              ref={r => (this.checkboxTable = r)}
-              filterable={true}
-              defaultFilterMethod={this.defaultFilter}
-              minRows={0}
-              data={this.state.customersFiltered}
-              columns={columns}
-              {...checkboxProps}
-              previousText={"Anterior"}
-              nextText={"Próximo"}
-              defaultPageSize={10}
-              loadingText={"Carregando..."}
-              noDataText={"Lista vazia."}
-              pageText={"Página"}
-              ofText={"de"}
-              rowsText={"linhas"}
-            />
+            <div align="right" className="topnav search-container margin10">
+              <label className="bold">Sugestões:{"\u00A0"} </label>
+              <select
+                className=".form-control right"
+                onChange={this.handleChangeDefaultMessage}
+                value={this.defaultMessage}
+              >
+                <option>
+                  {"Selecione uma sugestão ou informe o texto manual"}
+                </option>
+                {this.state.listDefaultMessages.map(item => (
+                  <option key={item.ID} value={item.ID}>
+                    {item.TITULO}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="container">
+              <div className="form-group bold">
+                <label htmlFor="title">Título</label>
+                <input
+                  value={this.state.title}
+                  onChange={this.handleChangeTitle}
+                  type="text"
+                  className="form-control"
+                  id="titleModal"
+                  aria-describedby="titleHelp"
+                  placeholder="Informe o título da mensagens"
+                  required
+                />
+                <small id="titlelHelp" className="form-text text-muted">
+                  * Esta informação é obrigatória, informe o assunto da mensagem
+                </small>
+              </div>
+              <div className="form-group bold">
+                <label>Conteúdo</label>
+                <textarea
+                  value={this.state.message}
+                  onChange={this.handleChangeMessage}
+                  rows="3"
+                  className="form-control"
+                  id="conteudoModal"
+                  aria-describedby="conteudoHelp"
+                  placeholder="Informe o conteúdo da mensagem"
+                  required
+                />
+                <small id="conteudoHelp" className="form-text text-muted">
+                  * Esta informação é obrigatória, informe a mensagem que será
+                  enviada
+                </small>
+              </div>
+              <div className="textBlock form-group bold">
+                <input
+                  type="checkbox"
+                  defaultChecked={this.state.blockOpenNewOS}
+                  onChange={this.handleBlockOpenOS}
+                />
+                <label className="margin10">
+                  Bloquear abertura de OSs para os clientes selecionados
+                </label>
+              </div>
+              <CheckboxTable
+                ref={r => (this.checkboxTable = r)}
+                filterable={true}
+                defaultFilterMethod={this.defaultFilter}
+                minRows={0}
+                data={this.state.customersFiltered}
+                columns={columns}
+                {...checkboxProps}
+                previousText={"Anterior"}
+                nextText={"Próximo"}
+                defaultPageSize={10}
+                loadingText={"Carregando..."}
+                noDataText={"Lista vazia."}
+                pageText={"Página"}
+                ofText={"de"}
+                rowsText={"linhas"}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </form>
     );
   }

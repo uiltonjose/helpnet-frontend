@@ -6,6 +6,7 @@ import { get, post, put } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
 import { showMessageOK } from "../../util/AlertDialogUtil";
 import { confirmAlert } from "react-confirm-alert";
+import Spinner from "../ui/Spinner";
 
 class SignUp extends Component {
   constructor(props) {
@@ -15,12 +16,13 @@ class SignUp extends Component {
       password: "",
       errorMessage: "",
       pendingRegister: false,
-      confirmationCode: ""
+      confirmationCode: "",
+      isLoading: false
     };
   }
 
   signUpHandler = () => {
-    this.setState({ errorMessage: "" });
+    this.setState({ errorMessage: "", isLoading: true });
 
     let { email, password } = this.state;
     firebaseApp
@@ -32,15 +34,17 @@ class SignUp extends Component {
         post(Api.addUser, user, resp => {
           const result = JSON.parse(resp);
           if (result.code === 200) {
-            this.setState({ userId: result.userId });
-            this.setState({ pendingRegister: true });
+            this.setState({
+              userId: result.userId,
+              pendingRegister: true
+            });
             this.loadProviders();
           } else {
             showMessageOK(
               "",
               "Falha no cadastro do usuário. Por favor, tente novamente.",
               () => {
-                // for now, just ignore it.
+                this.setState({ isLoading: false });
               }
             );
           }
@@ -65,7 +69,7 @@ class SignUp extends Component {
             message = "Falha no cadastro. Tente novamente";
             break;
         }
-        this.setState({ errorMessage: message });
+        this.setState({ errorMessage: message, isLoading: false });
       });
   };
 
@@ -183,13 +187,17 @@ class SignUp extends Component {
                   this.setState({ password: event.target.value })
                 }
               />
-              <button
-                className="btn btn-lg btn-primary btn-block btn-signin"
-                type="button"
-                onClick={() => this.signUpHandler()}
-              >
-                Cadastrar
-              </button>
+              {this.state.isLoading ? (
+                <Spinner />
+              ) : (
+                <button
+                  className="btn btn-lg btn-primary btn-block btn-signin"
+                  type="button"
+                  onClick={() => this.signUpHandler()}
+                >
+                  Cadastrar
+                </button>
+              )}
             </div>
             <div>
               Já possui cadastro?
