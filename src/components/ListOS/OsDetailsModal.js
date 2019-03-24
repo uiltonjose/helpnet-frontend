@@ -4,7 +4,6 @@ import API from "../../util/Endpoints";
 import { post } from "../../util/RequestUtil";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import { get } from "../../util/RequestUtil";
 import Spinner from "../ui/Spinner";
 
 const changeSituation = API.changeSituation;
@@ -23,7 +22,7 @@ const customStyles = {
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement(document.getElementById("modal"));
 
-class AssociateUserModal extends React.Component {
+class OsDetailsModal extends React.Component {
   constructor() {
     super();
 
@@ -48,7 +47,7 @@ class AssociateUserModal extends React.Component {
     const userInfo = JSON.parse(savedUserInfo);
     this.setState({ userInfo });
     this.setState({ os: this.props.os });
-    this.setState({ title: "Deseja realmente finalizar esta OS?" });
+    this.setState({ title: "Detalhes da OS" });
   }
 
   componentDidMount() {
@@ -70,7 +69,6 @@ class AssociateUserModal extends React.Component {
     this.setState({ modalIsOpen: false });
   }
 
-  // TODO Incluir o campo de informações para o cliente
   builderEventOs = os => {
     let jsonResult = {};
     jsonResult.osNumber = this.props.os.Número;
@@ -137,7 +135,7 @@ class AssociateUserModal extends React.Component {
     confirmAlert({
       title: "",
       message:
-        "Falha ao tentar finlizar a Ordem de Serviço. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+        "Falha ao tentar carregar a lista das Ordem de Serviços. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
       buttons: [
         {
           label: "OK",
@@ -181,7 +179,7 @@ class AssociateUserModal extends React.Component {
             type="button"
             className="btn btn-primary"
           >
-            Finalizar a OS
+            Detalhes da OS
           </button>
         </div>
         <Modal
@@ -209,70 +207,17 @@ class AssociateUserModal extends React.Component {
               <div className="text-center">
                 <h4 className="title bold">{this.state.title}</h4>
               </div>
-              {this.state.errorMessage && (
-                <div className="alert alert-danger display-linebreak ">
-                  <div className="textMessageError">
-                    {this.state.errorMessage}
-                  </div>
-                  <div align="right" className="topnav search-container">
-                    <button
-                      onClick={this.closeMessage}
-                      type="button"
-                      className="btn btn-secondary"
-                    >
-                      X
-                    </button>
-                  </div>
-                </div>
-              )}
-              <div className="form-group bold">
-                <label>Resolução do Problema</label>
-                <textarea
-                  value={this.state.problemResolution}
-                  onChange={this.handleProblemResolution}
-                  rows="3"
-                  className="form-control"
-                  aria-describedby="conteudoHelp"
-                  placeholder="Descreva como o problema foi resolvido"
-                  required
-                />
-                <small id="conteudoHelp" className="form-text text-muted">
-                  O preenchimento deste campo é obrigatório, as informações
-                  contidas neste campo serão utilizadas para futuras consultas.
-                </small>
-              </div>
-              <div className="form-group bold">
-                <label>Mensagem para o cliente</label>
-                <textarea
-                  value={this.state.msgToCustomer}
-                  onChange={this.handleChangeMsgToCustomer}
-                  rows="3"
-                  className="form-control"
-                  aria-describedby="conteudoHelp"
-                  placeholder="Adicione informações para o cliente"
-                />
-                <small id="conteudoHelp" className="form-text text-muted">
-                  O preenchimento deste campo é opcional, as informações
-                  contidas nesta campo serão enviadas para o cliente.
-                </small>
-              </div>
+              <label>
+                <h5> -- AQUI FICA OS DETALHES DA OS -- </h5>
+              </label>
               <div align="right" className="topnav search-container">
-                <div className="buttons">
+                <div>
                   <button
                     onClick={this.closeModal}
                     type="button"
-                    className="btn btn-secondary"
-                  >
-                    Cancelar
-                  </button>
-                </div>
-                <div>
-                  <button
-                    onClick={this.sendForm}
-                    type="button"
                     className="btn btn-primary"
                   >
-                    Finalizar OS
+                    Fechar
                   </button>
                 </div>
               </div>
@@ -284,4 +229,4 @@ class AssociateUserModal extends React.Component {
   }
 }
 
-export default AssociateUserModal;
+export default OsDetailsModal;

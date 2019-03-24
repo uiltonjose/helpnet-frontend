@@ -112,7 +112,7 @@ class ListOSOpened extends Component {
         id: "action",
         accessor: row => (
           <div>
-            <AssociateUserModal action="AssociateUser" os={row} />
+            <AssociateUserModal os={row} />
           </div>
         ),
         Header: "Ação"

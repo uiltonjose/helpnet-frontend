@@ -10,6 +10,7 @@ import { formatToTimeZone } from "date-fns-timezone";
 import { get } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
 import CloseOSModal from "./CloseOSModal";
+import AssociateUserModal from "./AssociateUserModal";
 
 const listOsByProviderIdAndInProgress = Api.listOsByProviderIdAndInProgress;
 
@@ -111,6 +112,7 @@ class ListOSInProgress extends Component {
         accessor: row => (
           <div>
             <CloseOSModal os={row} />
+            <AssociateUserModal action="changeResponsable" os={row} />
           </div>
         ),
         Header: "Ação"

@@ -49,7 +49,7 @@ export default () => (
         <Switch>
           <AuthRoute exact path="/" Component={Home} />
           <AuthRoute exact path="/app" Component={Home} />
-          <AuthRoute exact path="/home" Component={Home} />
+          <AuthRoute exact path="/home" Component={OSTab} />
           <AuthRoute exact path="/myData" Component={MyData} />
           <AuthRoute
             exact
@@ -61,7 +61,6 @@ export default () => (
             path="/listNotification"
             Component={ListNotification}
           />
-          <AuthRoute exact path="/ListOS" Component={OSTab} />
           <NonAuthRoute exact path="/signin" Component={SignIn} />
           <NonAuthRoute exact path="/signup" Component={SignUp} />
           <NonAuthRoute

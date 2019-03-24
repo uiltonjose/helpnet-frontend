@@ -9,6 +9,7 @@ import Chance from "chance";
 import { formatToTimeZone } from "date-fns-timezone";
 import { get } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
+import OsDetailsModal from "./OsDetailsModal";
 
 const listOsByProviderIdAndSituationClosed =
   Api.listOsByProviderIdAndSituationClosed;
@@ -106,6 +107,16 @@ class ListOSClosed extends Component {
             Header: key
           });
         }
+      });
+
+      columns.push({
+        id: "action",
+        accessor: row => (
+          <div>
+            <OsDetailsModal os={row} />
+          </div>
+        ),
+        Header: "Ação"
       });
     }
     return columns;
