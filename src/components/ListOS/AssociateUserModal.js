@@ -122,13 +122,10 @@ class AssociateUserModal extends React.Component {
       post(url, body, resp => {
         if (resp !== "") {
           const jsonResponse = JSON.parse(resp);
-          if (jsonResponse) {
-            const resultCode = jsonResponse.code;
-            if (resultCode === 200) {
-              this.closeModal();
-              this.successChangeSituationOS();
-              this.setState({ isLoading: false });
-            }
+          if (jsonResponse && jsonResponse.code === 200) {
+            this.closeModal();
+            this.successChangeSituationOS();
+            this.setState({ isLoading: false });
           } else {
             this.failUpdateOS();
           }
