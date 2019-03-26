@@ -1,23 +1,13 @@
 import React from "react";
 import Modal from "react-modal";
 import API from "../../util/Endpoints";
+import "./modal.css";
 import { post } from "../../util/RequestUtil";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Spinner from "../ui/Spinner";
 
 const changeSituation = API.changeSituation;
-
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
-  }
-};
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement(document.getElementById("modal"));
@@ -186,7 +176,7 @@ class OsDetailsModal extends React.Component {
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}
           onRequestClose={this.closeModal}
-          style={customStyles}
+          className="content"
           contentLabel="Example Modal"
         >
           {this.state.isLoading ? (

@@ -1,25 +1,14 @@
 import React from "react";
 import Modal from "react-modal";
 import API from "../../util/Endpoints";
-import { post } from "../../util/RequestUtil";
+import "./modal.css";
+import { post, get } from "../../util/RequestUtil";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import { get } from "../../util/RequestUtil";
 import Spinner from "../ui/Spinner";
 
 const changeSituation = API.changeSituation;
 const listByProviderId = API.listByProviderId;
-
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
-  }
-};
 
 //TODO Não consegui resolver isso aqui ainda
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
@@ -226,7 +215,7 @@ class AssociateUserModal extends React.Component {
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}
-          style={customStyles}
+          className="content"
           contentLabel="Example Modal"
         >
           {this.state.isLoading ? (
@@ -235,15 +224,6 @@ class AssociateUserModal extends React.Component {
             </div>
           ) : (
             <div className="container">
-              <div align="right" className="topnav search-container">
-                <button
-                  onClick={this.closeModal}
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  X
-                </button>
-              </div>
               <div className="text-center">
                 <h4 className="title bold">{this.state.title}</h4>
               </div>

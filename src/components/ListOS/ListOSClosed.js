@@ -19,10 +19,6 @@ class ListOSClosed extends Component {
     super(props);
     this.state = {
       message: "",
-      selection: [],
-      selectAll: false,
-      activeOSsChecked: "S",
-      defaulterOSsChecked: "S",
       errorMessage: "",
       providerId: "",
       isLoading: false
@@ -140,63 +136,11 @@ class ListOSClosed extends Component {
     return data;
   };
 
-  defaultFilter = (filter, row, column) => {
-    const id = filter.pivotId || filter.id;
-    return row[id] !== undefined
-      ? String(row[id].toLowerCase()).startsWith(filter.value.toLowerCase())
-      : true;
-  };
-
-  toggleSelection = (key, shift, row) => {
-    // start off with the existing state
-    let selection = [...this.state.selection];
-    const keyIndex = selection.indexOf(key);
-    // check to see if the key exists
-    if (keyIndex >= 0) {
-      // it does exist so we will remove it using destructing
-      selection = [
-        ...selection.slice(0, keyIndex),
-        ...selection.slice(keyIndex + 1)
-      ];
-    } else {
-      // it does not exist so add it
-      selection.push(key);
-    }
-    // update the state
-    this.setState({ selection });
-  };
-
-  toggleAll = () => {
-    const selectAll = this.state.selectAll ? false : true;
-    const selection = [];
-    if (selectAll) {
-      // we need to get at the internals of ReactTable
-      const wrappedInstance = this.checkboxTable.getWrappedInstance();
-      // the 'sortedData' property contains the currently accessible records based on the filter and sort
-      const currentRecords = wrappedInstance.getResolvedState().sortedData;
-      // we just push all the IDs onto the selection array
-      currentRecords.forEach(item => {
-        selection.push(item._original._id);
-      });
-    }
-    this.setState({ selectAll, selection });
-  };
-  isSelected = key => {
-    return this.state.selection.includes(key);
-  };
   render() {
-    const { toggleSelection, toggleAll, isSelected } = this;
-    let { columns, selectAll } = this.state;
+    let { columns } = this.state;
     if (typeof columns === "undefined") {
       columns = [];
     }
-    const checkboxProps = {
-      selectAll,
-      isSelected,
-      toggleSelection,
-      toggleAll,
-      selectType: "checkbox"
-    };
 
     return (
       <form id="formQuestion" onSubmit={this.handleSubmit}>
@@ -218,7 +162,6 @@ class ListOSClosed extends Component {
               minRows={0}
               data={this.state.ossFiltered}
               columns={columns}
-              {...checkboxProps}
               previousText={"Anterior"}
               nextText={"Próximo"}
               defaultPageSize={10}

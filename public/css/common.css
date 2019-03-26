@@ -99,6 +99,11 @@ img {
   float: right;
 }
 
+.textMessageError {
+  float: left;
+  width: 90%;
+}
+
 .respostas {
   width: 50%;
   float: left;
