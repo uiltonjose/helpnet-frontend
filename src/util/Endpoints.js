@@ -9,7 +9,16 @@ const apis = {
   updateUser: "api/user/activateUserWithProvider",
   getUserInfo: "api/user/info?userLogin=",
   listDefaultMessageForNotification:
-    "api/notification/listDefaultMessageForNotification"
+    "api/notification/listDefaultMessageForNotification",
+  listOsByProviderIdAndSituationOpened:
+    "api/os/listOsByProviderIdAndSituationOpened?providerId=",
+  listOsByProviderIdAndInProgress:
+    "api/os/listOsByProviderIdAndInProgress?providerId=",
+  listOsByProviderIdAndSituationClosed:
+    "api/os/listOsByProviderIdAndSituationClosed?providerId=",
+  changeSituation: "api/os/changeSituation",
+  associateUser: "api/os/associateUser",
+  listByProviderId: "api/user/listByProviderId?providerId="
 };
 
 export default apis;

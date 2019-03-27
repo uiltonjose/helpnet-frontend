@@ -35,3 +35,31 @@ export const showMessageOK = (title, message, okListener) => {
     ]
   });
 };
+
+export const unavailableServiceAlert = okListener => {
+  confirmAlert({
+    title: "",
+    message:
+      "O serviço está indisponível, por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+    buttons: [
+      {
+        label: "OK",
+        onClick: () => okListener()
+      }
+    ]
+  });
+};
+
+export const failLoadOsList = okListener => {
+  confirmAlert({
+    title: "",
+    message:
+      "Falha ao tentar carregar a lista das Ordem de Serviços. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+    buttons: [
+      {
+        label: "OK",
+        onClick: () => okListener()
+      }
+    ]
+  });
+};
