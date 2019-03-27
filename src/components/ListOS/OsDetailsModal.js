@@ -4,6 +4,7 @@ import API from "../../util/Endpoints";
 import "./modal.css";
 import { post } from "../../util/RequestUtil";
 import { confirmAlert } from "react-confirm-alert";
+import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Spinner from "../ui/Spinner";
 
@@ -35,9 +36,7 @@ class OsDetailsModal extends React.Component {
   componentWillMount() {
     const savedUserInfo = localStorage.getItem("userInfo");
     const userInfo = JSON.parse(savedUserInfo);
-    this.setState({ userInfo });
-    this.setState({ os: this.props.os });
-    this.setState({ title: "Detalhes da OS" });
+    this.setState({ userInfo, os: this.props.os, title: "Detalhes da OS" });
   }
 
   componentDidMount() {
@@ -45,10 +44,12 @@ class OsDetailsModal extends React.Component {
   }
 
   openModal() {
-    this.setState({ problemResolution: "" });
-    this.setState({ msgToCustomer: "" });
-    this.setState({ modalIsOpen: true });
-    this.setState({ isLoading: false });
+    this.setState({
+      problemResolution: "",
+      msgToCustomer: "",
+      modalIsOpen: true,
+      isLoading: false
+    });
   }
 
   afterOpenModal() {
@@ -92,7 +93,9 @@ class OsDetailsModal extends React.Component {
             this.failUpdateOS();
           }
         } else {
-          this.unavailableServiceAlert();
+          unavailableServiceAlert(() => {
+            this.setState({ isLoading: false });
+          });
         }
       });
     }
@@ -101,22 +104,6 @@ class OsDetailsModal extends React.Component {
   closeMessage() {
     this.setState({ errorMessage: "" });
   }
-
-  unavailableServiceAlert = () => {
-    confirmAlert({
-      title: "",
-      message:
-        "O serviço está indisponível, por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
-      buttons: [
-        {
-          label: "OK",
-          onClick: () => {
-            this.setState({ isLoading: false });
-          }
-        }
-      ]
-    });
-  };
 
   failUpdateOS = () => {
     confirmAlert({

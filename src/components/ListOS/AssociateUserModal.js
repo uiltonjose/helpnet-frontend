@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import API from "../../util/Endpoints";
 import "./modal.css";
 import { post, get } from "../../util/RequestUtil";
+import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Spinner from "../ui/Spinner";
@@ -40,26 +41,24 @@ class AssociateUserModal extends React.Component {
   componentWillMount() {
     const savedUserInfo = localStorage.getItem("userInfo");
     const userInfo = JSON.parse(savedUserInfo);
-    this.setState({ userInfo });
-    this.setState({ os: this.props.os });
+
+    this.setState({
+      userInfo,
+      os: this.props.os,
+      title: "Selecione o Tecnico que ficará responsável por esta OS"
+    });
+
     if (this.props.action === "changeResponsable") {
       this.setState({
-        action: "Confirmar o novo responsável"
-      });
-      this.setState({
+        action: "Confirmar o novo responsável",
         actionFromList: "Alterar Responsável"
       });
     } else {
       this.setState({
-        action: "Encaminhar OS para atendimento"
-      });
-      this.setState({
+        action: "Encaminhar OS para atendimento",
         actionFromList: "Definir Responsável"
       });
     }
-    this.setState({
-      title: "Selecione o Tecnico que ficará responsável por esta OS"
-    });
   }
 
   componentDidMount() {
@@ -76,16 +75,16 @@ class AssociateUserModal extends React.Component {
         const listResponsible = jsonResp.message;
         this.setState({ listResponsible });
       } else {
-        this.unavailableServiceAlert();
+        unavailableServiceAlert(() => {
+          this.setState({ isLoading: false });
+        });
       }
     });
     this.setState({ isLoading: false });
   };
 
   openModal() {
-    this.setState({ observation: "" });
-    this.setState({ responsible: "" });
-    this.setState({ modalIsOpen: true });
+    this.setState({ observation: "", responsible: "", modalIsOpen: true });
   }
 
   afterOpenModal() {
@@ -112,9 +111,9 @@ class AssociateUserModal extends React.Component {
     this.setState({ errorMessage: "", isLoading: true });
     if (this.state.responsible === "") {
       this.setState({
-        errorMessage: "* O responsável pela OS precisa ser informado"
+        errorMessage: "* O responsável pela OS precisa ser informado",
+        isLoading: false
       });
-      this.setState({ isLoading: false });
     } else {
       let url = `${changeSituation}`;
       const body = this.builderEventOs(this.state.os);
@@ -130,7 +129,9 @@ class AssociateUserModal extends React.Component {
             this.failUpdateOS();
           }
         } else {
-          this.unavailableServiceAlert();
+          unavailableServiceAlert(() => {
+            this.setState({ isLoading: false });
+          });
         }
       });
     }
@@ -139,22 +140,6 @@ class AssociateUserModal extends React.Component {
   closeMessage() {
     this.setState({ errorMessage: "" });
   }
-
-  unavailableServiceAlert = () => {
-    confirmAlert({
-      title: "",
-      message:
-        "O serviço está indisponível, por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
-      buttons: [
-        {
-          label: "OK",
-          onClick: () => {
-            this.setState({ isLoading: false });
-          }
-        }
-      ]
-    });
-  };
 
   failUpdateOS = () => {
     confirmAlert({

@@ -3,9 +3,12 @@ import Modal from "react-modal";
 import API from "../../util/Endpoints";
 import "./modal.css";
 import { post } from "../../util/RequestUtil";
-import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Spinner from "../ui/Spinner";
+import {
+  unavailableServiceAlert,
+  showMessageOK
+} from "../../util/AlertDialogUtil";
 
 const changeSituation = API.changeSituation;
 
@@ -45,10 +48,12 @@ class AssociateUserModal extends React.Component {
   }
 
   openModal() {
-    this.setState({ problemResolution: "" });
-    this.setState({ msgToCustomer: "" });
-    this.setState({ modalIsOpen: true });
-    this.setState({ isLoading: false });
+    this.setState({
+      problemResolution: "",
+      msgToCustomer: "",
+      modalIsOpen: true,
+      isLoading: false
+    });
   }
 
   afterOpenModal() {
@@ -75,9 +80,9 @@ class AssociateUserModal extends React.Component {
     this.setState({ errorMessage: "", isLoading: true });
     if (this.state.problemResolution === "") {
       this.setState({
-        errorMessage: "* A resolução do problema precisa ser informada"
+        errorMessage: "* A resolução do problema precisa ser informada",
+        isLoading: false
       });
-      this.setState({ isLoading: false });
     } else {
       let url = `${changeSituation}`;
       const body = this.builderEventOs(this.state.os);
@@ -93,7 +98,9 @@ class AssociateUserModal extends React.Component {
             this.failUpdateOS();
           }
         } else {
-          this.unavailableServiceAlert();
+          unavailableServiceAlert(() => {
+            this.setState({ isLoading: false });
+          });
         }
       });
     }
@@ -103,50 +110,19 @@ class AssociateUserModal extends React.Component {
     this.setState({ errorMessage: "" });
   }
 
-  unavailableServiceAlert = () => {
-    confirmAlert({
-      title: "",
-      message:
-        "O serviço está indisponível, por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
-      buttons: [
-        {
-          label: "OK",
-          onClick: () => {
-            this.setState({ isLoading: false });
-          }
-        }
-      ]
-    });
-  };
-
   failUpdateOS = () => {
-    confirmAlert({
-      title: "",
-      message:
-        "Falha ao tentar finlizar a Ordem de Serviço. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
-      buttons: [
-        {
-          label: "OK",
-          onClick: () => {
-            this.setState({ isLoading: false });
-          }
-        }
-      ]
-    });
+    showMessageOK(
+      "",
+      "Falha ao tentar finlizar a Ordem de Serviço. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+      () => {
+        this.setState({ isLoading: false });
+      }
+    );
   };
 
   successChangeSituationOS = () => {
-    confirmAlert({
-      title: "",
-      message: "OS atualizada com sucesso.",
-      buttons: [
-        {
-          label: "OK",
-          onClick: () => {
-            this.setState({ isLoading: false });
-          }
-        }
-      ]
+    showMessageOK("", "OS atualizada com sucesso.", () => {
+      this.setState({ isLoading: false });
     });
   };
 
