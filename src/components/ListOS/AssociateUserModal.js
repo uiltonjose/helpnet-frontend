@@ -61,10 +61,7 @@ class AssociateUserModal extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.setState({ isLoading: true });
-    this.loadResponsible();
-  }
+  componentDidMount() {}
 
   loadResponsible = () => {
     const providerId = this.state.userInfo["provedor_id"];
@@ -85,6 +82,8 @@ class AssociateUserModal extends React.Component {
 
   openModal() {
     this.setState({ observation: "", responsible: "", modalIsOpen: true });
+    this.setState({ isLoading: true });
+    this.loadResponsible();
   }
 
   afterOpenModal() {

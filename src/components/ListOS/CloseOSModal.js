@@ -22,7 +22,7 @@ class AssociateUserModal extends React.Component {
     this.state = {
       modalIsOpen: false,
       problemResolution: "",
-      msgToCustomer: "",
+      messageToCustomer: "",
       errorMessage: "",
       isLoading: false
     };
@@ -31,7 +31,9 @@ class AssociateUserModal extends React.Component {
     this.closeModal = this.closeModal.bind(this);
     this.closeMessage = this.closeMessage.bind(this);
     this.sendForm = this.sendForm.bind(this);
-    this.handleChangeMsgToCustomer = this.handleChangeMsgToCustomer.bind(this);
+    this.handleChangeMessageToCustomer = this.handleChangeMessageToCustomer.bind(
+      this
+    );
     this.handleProblemResolution = this.handleProblemResolution.bind(this);
   }
 
@@ -50,7 +52,7 @@ class AssociateUserModal extends React.Component {
   openModal() {
     this.setState({
       problemResolution: "",
-      msgToCustomer: "",
+      messageToCustomer: "",
       modalIsOpen: true,
       isLoading: false
     });
@@ -69,6 +71,7 @@ class AssociateUserModal extends React.Component {
     let jsonResult = {};
     jsonResult.osNumber = this.props.os.Número;
     jsonResult.situationId = 3;
+    jsonResult.messageToCustomer = this.state.messageToCustomer;
     jsonResult.event = {};
     jsonResult.event.userId = this.state.userInfo["id"];
     jsonResult.event.eventTypeID = 4;
@@ -126,8 +129,8 @@ class AssociateUserModal extends React.Component {
     });
   };
 
-  handleChangeMsgToCustomer(event) {
-    this.setState({ msgToCustomer: event.target.value });
+  handleChangeMessageToCustomer(event) {
+    this.setState({ messageToCustomer: event.target.value });
   }
 
   handleProblemResolution(event) {
@@ -197,8 +200,8 @@ class AssociateUserModal extends React.Component {
               <div className="form-group bold">
                 <label>Mensagem para o cliente</label>
                 <textarea
-                  value={this.state.msgToCustomer}
-                  onChange={this.handleChangeMsgToCustomer}
+                  value={this.state.messageToCustomer}
+                  onChange={this.handleChangeMessageToCustomer}
                   rows="3"
                   className="form-control"
                   aria-describedby="conteudoHelp"
