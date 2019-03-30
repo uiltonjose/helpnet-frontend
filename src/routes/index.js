@@ -7,7 +7,7 @@ import Home from "./../components/Home/Home";
 import MyData from "./../components/MyData/MyData";
 import SendNotification from "./../components/SendNotification/SendNotification";
 import ListNotification from "./../components/ListNotification/ListNotification";
-import ListOS from "./../components/ListOS/ListOS";
+import OSTab from "../components/ListOS/OSTab";
 import SignIn from "./../components/Login/SignIn";
 import SignUp from "./../components/Login/SignUp";
 import ForgotPassword from "./../components/Login/ForgotPassword";
@@ -49,7 +49,7 @@ export default () => (
         <Switch>
           <AuthRoute exact path="/" Component={Home} />
           <AuthRoute exact path="/app" Component={Home} />
-          <AuthRoute exact path="/home" Component={Home} />
+          <AuthRoute exact path="/home" Component={OSTab} />
           <AuthRoute exact path="/myData" Component={MyData} />
           <AuthRoute
             exact
@@ -61,7 +61,6 @@ export default () => (
             path="/listNotification"
             Component={ListNotification}
           />
-          <AuthRoute exact path="/ListOS" Component={ListOS} />
           <NonAuthRoute exact path="/signin" Component={SignIn} />
           <NonAuthRoute exact path="/signup" Component={SignUp} />
           <NonAuthRoute

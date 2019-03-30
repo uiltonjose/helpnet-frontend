@@ -92,6 +92,11 @@ img {
   float: left;
 }
 
+.buttons {
+  width: 55%;
+  float: left;
+}
+
 .wrapper {
   position: relative;
 }

@@ -3,6 +3,7 @@ import ReactTable from "react-table";
 import checkboxHOC from "react-table/lib/hoc/selectTable";
 import Chance from "chance";
 import { confirmAlert } from "react-confirm-alert";
+import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
 import "./sendNotification.css";
 import "react-table/react-table.css";
 import "rc-checkbox/assets/index.css";
@@ -50,22 +51,6 @@ class SendNotification extends Component {
     this.handleBlockOpenOS = this.handleBlockOpenOS.bind(this);
   }
 
-  unavailableServiceAlert = () => {
-    confirmAlert({
-      title: "",
-      message:
-        "O serviço está indisponível, por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
-      buttons: [
-        {
-          label: "OK",
-          onClick: () => {
-            this.setState({ isLoading: false });
-          }
-        }
-      ]
-    });
-  };
-
   failLoadCustomersAlert = () => {
     confirmAlert({
       title: "",
@@ -102,7 +87,9 @@ class SendNotification extends Component {
         const listDefaultMessages = jsonResp.data;
         this.setState({ listDefaultMessages });
       } else {
-        this.unavailableServiceAlert();
+        unavailableServiceAlert(() => {
+          this.setState({ isLoading: false });
+        });
       }
     });
   };
@@ -130,7 +117,9 @@ class SendNotification extends Component {
           this.failLoadCustomersAlert();
         }
       } else {
-        this.unavailableServiceAlert();
+        unavailableServiceAlert(() => {
+          this.setState({ isLoading: false });
+        });
       }
     });
   };
