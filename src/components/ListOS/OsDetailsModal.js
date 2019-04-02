@@ -2,13 +2,13 @@ import React from "react";
 import Modal from "react-modal";
 import API from "../../util/Endpoints";
 import "./modal.css";
-import { post } from "../../util/RequestUtil";
+import { get } from "../../util/RequestUtil";
 import { confirmAlert } from "react-confirm-alert";
 import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Spinner from "../ui/Spinner";
 
-const changeSituation = API.changeSituation;
+const getOsByNumber = API.getOsByNumber;
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement(document.getElementById("modal"));
@@ -22,15 +22,14 @@ class OsDetailsModal extends React.Component {
       problemResolution: "",
       msgToCustomer: "",
       errorMessage: "",
+      osSelected: {},
       isLoading: false
     };
     this.openModal = this.openModal.bind(this);
     this.afterOpenModal = this.afterOpenModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.closeMessage = this.closeMessage.bind(this);
-    this.sendForm = this.sendForm.bind(this);
-    this.handleChangeMsgToCustomer = this.handleChangeMsgToCustomer.bind(this);
-    this.handleProblemResolution = this.handleProblemResolution.bind(this);
+    this.getOsByNumber = this.getOsByNumber.bind(this);
   }
 
   componentWillMount() {
@@ -50,6 +49,24 @@ class OsDetailsModal extends React.Component {
       modalIsOpen: true,
       isLoading: false
     });
+    this.getOsByNumber();
+  }
+
+  getOsByNumber() {
+    const os = this.props.os;
+    const url = `${getOsByNumber}${os.Número}`;
+    get(url, resp => {
+      if (resp !== "") {
+        const jsonResp = JSON.parse(resp);
+        const osSelected = jsonResp.data;
+        this.setState({ osSelected });
+      } else {
+        unavailableServiceAlert(() => {
+          this.setState({ isLoading: false });
+        });
+      }
+    });
+    this.setState({ isLoading: false });
   }
 
   afterOpenModal() {
@@ -60,88 +77,8 @@ class OsDetailsModal extends React.Component {
     this.setState({ modalIsOpen: false });
   }
 
-  builderEventOs = os => {
-    let jsonResult = {};
-    jsonResult.osNumber = this.props.os.Número;
-    jsonResult.situationId = 3;
-    jsonResult.event = {};
-    jsonResult.event.userId = this.state.userInfo["id"];
-    jsonResult.event.eventTypeID = 4;
-    jsonResult.event.description = this.state.observation;
-    return jsonResult;
-  };
-
-  sendForm() {
-    this.setState({ errorMessage: "", isLoading: true });
-    if (this.state.problemResolution === "") {
-      this.setState({
-        errorMessage: "* A resolução do problema precisa ser informada"
-      });
-      this.setState({ isLoading: false });
-    } else {
-      let url = `${changeSituation}`;
-      const body = this.builderEventOs(this.state.os);
-
-      post(url, body, resp => {
-        if (resp !== "") {
-          const jsonResponse = JSON.parse(resp);
-          if (jsonResponse && jsonResponse.code === 200) {
-            this.closeModal();
-            this.successChangeSituationOS();
-            this.setState({ isLoading: false });
-          } else {
-            this.failUpdateOS();
-          }
-        } else {
-          unavailableServiceAlert(() => {
-            this.setState({ isLoading: false });
-          });
-        }
-      });
-    }
-  }
-
   closeMessage() {
     this.setState({ errorMessage: "" });
-  }
-
-  failUpdateOS = () => {
-    confirmAlert({
-      title: "",
-      message:
-        "Falha ao tentar carregar a lista das Ordem de Serviços. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
-      buttons: [
-        {
-          label: "OK",
-          onClick: () => {
-            this.setState({ isLoading: false });
-          }
-        }
-      ]
-    });
-  };
-
-  successChangeSituationOS = () => {
-    confirmAlert({
-      title: "",
-      message: "OS atualizada com sucesso.",
-      buttons: [
-        {
-          label: "OK",
-          onClick: () => {
-            this.setState({ isLoading: false });
-          }
-        }
-      ]
-    });
-  };
-
-  handleChangeMsgToCustomer(event) {
-    this.setState({ msgToCustomer: event.target.value });
-  }
-
-  handleProblemResolution(event) {
-    this.setState({ problemResolution: event.target.value });
   }
 
   render() {
@@ -169,21 +106,147 @@ class OsDetailsModal extends React.Component {
             </div>
           ) : (
             <div className="container">
-              <div align="right" className="topnav search-container">
-                <button
-                  onClick={this.closeModal}
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  X
-                </button>
-              </div>
               <div className="text-center">
                 <h4 className="title bold">{this.state.title}</h4>
               </div>
-              <label>
-                <h5> -- AQUI FICA OS DETALHES DA OS -- </h5>
-              </label>
+              <div className="container">
+                <div className="form-group bold left">
+                  <label htmlFor="title">Número OS</label>
+                  <input
+                    value={this.state.osSelected.numeroOS}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold right">
+                  <label htmlFor="title">CPF do cliente</label>
+                  <input
+                    value={this.state.osSelected.cpf_cnpj}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold">
+                  <label htmlFor="title">Nome do cliente</label>
+                  <input
+                    value={this.state.osSelected.nomeCliente}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+
+                <div className="form-group bold">
+                  <label htmlFor="title">Referência</label>
+                  <input
+                    value={this.state.osSelected.nome_res}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold">
+                  <label htmlFor="title">Data do Cadastro</label>
+                  <input
+                    value={this.state.osSelected.dataCadastroProvedor}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold left">
+                  <label htmlFor="title">Login</label>
+                  <input
+                    value={this.state.osSelected.login}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold right">
+                  <label htmlFor="title">Plano</label>
+                  <input
+                    value={this.state.osSelected.plabo}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold left">
+                  <label htmlFor="title">Telefone</label>
+                  <input
+                    value={this.state.osSelected.fone}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold right">
+                  <label htmlFor="title">Celular</label>
+                  <input
+                    value={this.state.osSelected.celular}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold left">
+                  <label htmlFor="title">Endereço</label>
+                  <input
+                    value={this.state.osSelected.endereco}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold right">
+                  <label htmlFor="title">Número</label>
+                  <input
+                    value={this.state.osSelected.numero}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold left">
+                  <label htmlFor="title">Bairro</label>
+                  <input
+                    value={this.state.osSelected.bairro}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold right">
+                  <label htmlFor="title">Cidade</label>
+                  <input
+                    value={this.state.osSelected.cidade}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold">
+                  <label htmlFor="title">Problema</label>
+                  <input
+                    value={this.state.osSelected.problema}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+                <div className="form-group bold">
+                  <label htmlFor="title">Detalhe da OS</label>
+                  <input
+                    value={this.state.osSelected.detalhesOS}
+                    type="text"
+                    className="form-control"
+                    disabled
+                  />
+                </div>
+              </div>
               <div align="right" className="topnav search-container">
                 <div>
                   <button
