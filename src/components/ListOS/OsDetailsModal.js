@@ -3,7 +3,6 @@ import Modal from "react-modal";
 import API from "../../util/Endpoints";
 import "./modal.css";
 import { get } from "../../util/RequestUtil";
-import { confirmAlert } from "react-confirm-alert";
 import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Spinner from "../ui/Spinner";
@@ -110,141 +109,65 @@ class OsDetailsModal extends React.Component {
                 <h4 className="title bold">{this.state.title}</h4>
               </div>
               <div className="container">
-                <div className="form-group bold left">
-                  <label htmlFor="title">Número OS</label>
-                  <input
-                    value={this.state.osSelected.numeroOS}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group left">
+                  <label className="bold">Número OS:&nbsp;</label>
+                  <label>{this.state.osSelected.numeroOS}</label>
                 </div>
-                <div className="form-group bold right">
-                  <label htmlFor="title">CPF do cliente</label>
-                  <input
-                    value={this.state.osSelected.cpf_cnpj}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group right">
+                  <label className="bold">CPF do cliente:&nbsp; </label>
+                  <label>{this.state.osSelected.cpf_cnpj}</label>
                 </div>
-                <div className="form-group bold">
-                  <label htmlFor="title">Nome do cliente</label>
-                  <input
-                    value={this.state.osSelected.nomeCliente}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group">
+                  <label className="bold">Nome do cliente:&nbsp;</label>
+                  <label>{this.state.osSelected.nomeCliente}</label>
                 </div>
-
-                <div className="form-group bold">
-                  <label htmlFor="title">Referência</label>
-                  <input
-                    value={this.state.osSelected.nome_res}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group">
+                  <label className="bold">Referência:&nbsp;</label>
+                  <label>{this.state.osSelected.nome_res}</label>
                 </div>
-                <div className="form-group bold">
-                  <label htmlFor="title">Data do Cadastro</label>
-                  <input
-                    value={this.state.osSelected.dataCadastroProvedor}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group">
+                  <label className="bold">Data do Cadastro:&nbsp;</label>
+                  <label>{this.state.osSelected.dataCadastroProvedor}</label>
                 </div>
-                <div className="form-group bold left">
-                  <label htmlFor="title">Login</label>
-                  <input
-                    value={this.state.osSelected.login}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group left">
+                  <label className="bold">Login:&nbsp;</label>
+                  <label>{this.state.osSelected.login}</label>
                 </div>
-                <div className="form-group bold right">
-                  <label htmlFor="title">Plano</label>
-                  <input
-                    value={this.state.osSelected.plabo}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group left">
+                  <label className="bold">Plano:&nbsp;</label>
+                  <label>{this.state.osSelected.plano}</label>
                 </div>
-                <div className="form-group bold left">
-                  <label htmlFor="title">Telefone</label>
-                  <input
-                    value={this.state.osSelected.fone}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group left">
+                  <label className="bold">Telefone:&nbsp;</label>
+                  <label>{this.state.osSelected.fone}</label>
                 </div>
-                <div className="form-group bold right">
-                  <label htmlFor="title">Celular</label>
-                  <input
-                    value={this.state.osSelected.celular}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group left">
+                  <label className="bold">Celular:&nbsp;</label>
+                  <label>{this.state.osSelected.celular}</label>
                 </div>
-                <div className="form-group bold left">
-                  <label htmlFor="title">Endereço</label>
-                  <input
-                    value={this.state.osSelected.endereco}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group left">
+                  <label className="bold">Endereço:&nbsp;</label>
+                  <label>{this.state.osSelected.endereco}</label>
                 </div>
-                <div className="form-group bold right">
-                  <label htmlFor="title">Número</label>
-                  <input
-                    value={this.state.osSelected.numero}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group left">
+                  <label className="bold">Número:&nbsp;</label>
+                  <label>{this.state.osSelected.numero}</label>
                 </div>
-                <div className="form-group bold left">
-                  <label htmlFor="title">Bairro</label>
-                  <input
-                    value={this.state.osSelected.bairro}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group left">
+                  <label className="bold">Bairro:&nbsp;</label>
+                  <label>{this.state.osSelected.bairro}</label>
                 </div>
-                <div className="form-group bold right">
-                  <label htmlFor="title">Cidade</label>
-                  <input
-                    value={this.state.osSelected.cidade}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group left">
+                  <label className="bold">Cidade:&nbsp;</label>
+                  <label>{this.state.osSelected.cidade}</label>
                 </div>
-                <div className="form-group bold">
-                  <label htmlFor="title">Problema</label>
-                  <input
-                    value={this.state.osSelected.problema}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group">
+                  <label className="bold">Problema:&nbsp;</label>
+                  <label>{this.state.osSelected.problema}</label>
                 </div>
-                <div className="form-group bold">
-                  <label htmlFor="title">Detalhe da OS</label>
-                  <input
-                    value={this.state.osSelected.detalhesOS}
-                    type="text"
-                    className="form-control"
-                    disabled
-                  />
+                <div className="form-group">
+                  <label className="bold">Detalhe da OS:&nbsp;</label>
+                  <label>{this.state.osSelected.detalhesOS}</label>
                 </div>
               </div>
               <div align="right" className="topnav search-container">

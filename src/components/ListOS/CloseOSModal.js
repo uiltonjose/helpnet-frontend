@@ -75,7 +75,7 @@ class AssociateUserModal extends React.Component {
     jsonResult.event = {};
     jsonResult.event.userId = this.state.userInfo["id"];
     jsonResult.event.eventTypeID = 4;
-    jsonResult.event.description = this.state.observation;
+    jsonResult.event.description = this.state.problemResolution;
     return jsonResult;
   };
 
@@ -116,7 +116,7 @@ class AssociateUserModal extends React.Component {
   failUpdateOS = () => {
     showMessageOK(
       "",
-      "Falha ao tentar finlizar a Ordem de Serviço. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+      "Falha ao tentar finalizar a Ordem de Serviço. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
       () => {
         this.setState({ isLoading: false });
       }
