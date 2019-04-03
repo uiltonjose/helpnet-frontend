@@ -1,11 +1,14 @@
 import React from "react";
+import ReactTable from "react-table";
 import Modal from "react-modal";
 import API from "../../util/Endpoints";
 import "./modal.css";
+import { formatToTimeZone } from "date-fns-timezone";
 import { get } from "../../util/RequestUtil";
 import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Spinner from "../ui/Spinner";
+import Chance from "chance";
 
 const getOsByNumber = API.getOsByNumber;
 
@@ -51,6 +54,32 @@ class OsDetailsModal extends React.Component {
     this.getOsByNumber();
   }
 
+  getColumnsOS = ossParam => {
+    const columns = [];
+    if (Object.keys(ossParam).length > 0) {
+      Object.keys(ossParam[0]).forEach(key => {
+        if (key !== "_id") {
+          columns.push({
+            accessor: key,
+            Header: key
+          });
+        }
+      });
+    }
+    return columns;
+  };
+
+  getDataOS = ossParam => {
+    const data = ossParam.map(item => {
+      const _id = new Chance().guid();
+      return {
+        _id,
+        ...item
+      };
+    });
+    return data;
+  };
+
   getOsByNumber() {
     const os = this.props.os;
     const url = `${getOsByNumber}${os.Número}`;
@@ -58,6 +87,13 @@ class OsDetailsModal extends React.Component {
       if (resp !== "") {
         const jsonResp = JSON.parse(resp);
         const osSelected = jsonResp.data;
+        const columns = this.getColumnsOS(osSelected.event);
+        const events = this.getDataOS(osSelected.event);
+        this.setState({
+          events,
+          columns,
+          isLoading: false
+        });
         this.setState({ osSelected });
       } else {
         unavailableServiceAlert(() => {
@@ -81,6 +117,10 @@ class OsDetailsModal extends React.Component {
   }
 
   render() {
+    let { columns } = this.state;
+    if (typeof columns === "undefined") {
+      columns = [];
+    }
     return (
       <div>
         <div className="blue">
@@ -104,81 +144,96 @@ class OsDetailsModal extends React.Component {
               <Spinner />
             </div>
           ) : (
-            <div className="container">
+            <div className="container scrollable">
               <div className="text-center">
                 <h4 className="title bold">{this.state.title}</h4>
               </div>
               <div className="container">
-                <div className="form-group left">
+                <div className="left">
                   <label className="bold">Número OS:&nbsp;</label>
                   <label>{this.state.osSelected.numeroOS}</label>
                 </div>
-                <div className="form-group right">
+                <div className="right">
                   <label className="bold">CPF do cliente:&nbsp; </label>
                   <label>{this.state.osSelected.cpf_cnpj}</label>
                 </div>
-                <div className="form-group">
+                <div>
                   <label className="bold">Nome do cliente:&nbsp;</label>
                   <label>{this.state.osSelected.nomeCliente}</label>
                 </div>
-                <div className="form-group">
+                <div>
                   <label className="bold">Referência:&nbsp;</label>
                   <label>{this.state.osSelected.nome_res}</label>
                 </div>
-                <div className="form-group">
+                <div>
                   <label className="bold">Data do Cadastro:&nbsp;</label>
                   <label>{this.state.osSelected.dataCadastroProvedor}</label>
                 </div>
-                <div className="form-group left">
+                <div className="left">
                   <label className="bold">Login:&nbsp;</label>
                   <label>{this.state.osSelected.login}</label>
                 </div>
-                <div className="form-group left">
+                <div className="left">
                   <label className="bold">Plano:&nbsp;</label>
                   <label>{this.state.osSelected.plano}</label>
                 </div>
-                <div className="form-group left">
+                <div className="left">
                   <label className="bold">Telefone:&nbsp;</label>
                   <label>{this.state.osSelected.fone}</label>
                 </div>
-                <div className="form-group left">
+                <div className="left">
                   <label className="bold">Celular:&nbsp;</label>
                   <label>{this.state.osSelected.celular}</label>
                 </div>
-                <div className="form-group left">
+                <div className="left">
                   <label className="bold">Endereço:&nbsp;</label>
                   <label>{this.state.osSelected.endereco}</label>
                 </div>
-                <div className="form-group left">
+                <div className="left">
                   <label className="bold">Número:&nbsp;</label>
                   <label>{this.state.osSelected.numero}</label>
                 </div>
-                <div className="form-group left">
+                <div className="left">
                   <label className="bold">Bairro:&nbsp;</label>
                   <label>{this.state.osSelected.bairro}</label>
                 </div>
-                <div className="form-group left">
+                <div className="left">
                   <label className="bold">Cidade:&nbsp;</label>
                   <label>{this.state.osSelected.cidade}</label>
                 </div>
-                <div className="form-group">
+                <div>
                   <label className="bold">Problema:&nbsp;</label>
                   <label>{this.state.osSelected.problema}</label>
                 </div>
-                <div className="form-group">
+                <div>
                   <label className="bold">Detalhe da OS:&nbsp;</label>
                   <label>{this.state.osSelected.detalhesOS}</label>
                 </div>
               </div>
-              <div align="right" className="topnav search-container">
+              <div className="container">
+                <div className="text-center">
+                  <h4 className="title bold">Evento das OS</h4>
+                </div>
                 <div>
-                  <button
-                    onClick={this.closeModal}
-                    type="button"
-                    className="btn btn-primary"
-                  >
-                    Fechar
-                  </button>
+                  <ReactTable
+                    minRows={0}
+                    data={this.state.events}
+                    columns={columns}
+                    loadingText={"Carregando..."}
+                    noDataText={"Lista vazia."}
+                    showPagination={false}
+                  />
+                </div>
+                <div align="right" className="topnav search-container">
+                  <div>
+                    <button
+                      onClick={this.closeModal}
+                      type="button"
+                      className="btn btn-primary"
+                    >
+                      Fechar
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
