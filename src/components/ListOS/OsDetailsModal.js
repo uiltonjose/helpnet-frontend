@@ -3,7 +3,6 @@ import ReactTable from "react-table";
 import Modal from "react-modal";
 import API from "../../util/Endpoints";
 import "./modal.css";
-import { formatToTimeZone } from "date-fns-timezone";
 import { get } from "../../util/RequestUtil";
 import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
 import "react-confirm-alert/src/react-confirm-alert.css";
@@ -90,11 +89,11 @@ class OsDetailsModal extends React.Component {
         const columns = this.getColumnsOS(osSelected.event);
         const events = this.getDataOS(osSelected.event);
         this.setState({
+          osSelected,
           events,
           columns,
           isLoading: false
         });
-        this.setState({ osSelected });
       } else {
         unavailableServiceAlert(() => {
           this.setState({ isLoading: false });

@@ -98,6 +98,7 @@ class AssociateUserModal extends React.Component {
     let jsonResult = {};
     jsonResult.osNumber = this.props.os.Número;
     jsonResult.situationId = 2;
+    jsonResult.messageToCustomer = null;
     jsonResult.userId = this.state.responsible;
     jsonResult.event = {};
     jsonResult.event.userId = this.state.userInfo["id"];

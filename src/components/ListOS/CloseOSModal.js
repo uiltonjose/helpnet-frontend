@@ -66,12 +66,12 @@ class AssociateUserModal extends React.Component {
     this.setState({ modalIsOpen: false });
   }
 
-  // TODO Incluir o campo de informações para o cliente
   builderEventOs = os => {
     let jsonResult = {};
     jsonResult.osNumber = this.props.os.Número;
     jsonResult.situationId = 3;
     jsonResult.messageToCustomer = this.state.messageToCustomer;
+    jsonResult.userId = null;
     jsonResult.event = {};
     jsonResult.event.userId = this.state.userInfo["id"];
     jsonResult.event.eventTypeID = 4;
