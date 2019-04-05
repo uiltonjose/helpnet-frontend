@@ -66,16 +66,16 @@ class AssociateUserModal extends React.Component {
     this.setState({ modalIsOpen: false });
   }
 
-  // TODO Incluir o campo de informações para o cliente
   builderEventOs = os => {
     let jsonResult = {};
     jsonResult.osNumber = this.props.os.Número;
     jsonResult.situationId = 3;
     jsonResult.messageToCustomer = this.state.messageToCustomer;
+    jsonResult.userId = null;
     jsonResult.event = {};
     jsonResult.event.userId = this.state.userInfo["id"];
     jsonResult.event.eventTypeID = 4;
-    jsonResult.event.description = this.state.observation;
+    jsonResult.event.description = this.state.problemResolution;
     return jsonResult;
   };
 
@@ -116,7 +116,7 @@ class AssociateUserModal extends React.Component {
   failUpdateOS = () => {
     showMessageOK(
       "",
-      "Falha ao tentar finlizar a Ordem de Serviço. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+      "Falha ao tentar finalizar a Ordem de Serviço. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
       () => {
         this.setState({ isLoading: false });
       }

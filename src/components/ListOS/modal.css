@@ -17,3 +17,10 @@
   margin-right: -50%;
   transform: translate(-50%, -50%);
 }
+
+.scrollable {
+  height: 450px;
+  overflow: scroll;
+  border: 0.5px;
+  padding: 10px;
+}

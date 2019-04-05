@@ -70,11 +70,6 @@ class NavBar extends Component {
                     Listar Notificação
                   </Link>
                 </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to={"/listOS"}>
-                    Listar OS
-                  </Link>
-                </li>
               </ul>
               <div id="logout-group">
                 <p id="providerLogin">{this.state.providerLogin}</p>
