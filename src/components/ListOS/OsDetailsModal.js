@@ -8,7 +8,9 @@ import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Spinner from "../ui/Spinner";
 import Chance from "chance";
-
+import details from "../../imgs/details.png";
+import AssociateUserModal from "./AssociateUserModal";
+import CloseOSModal from "./CloseOSModal";
 const getOsByNumber = API.getOsByNumber;
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
@@ -121,16 +123,13 @@ class OsDetailsModal extends React.Component {
       columns = [];
     }
     return (
-      <div>
-        <div className="blue">
-          <button
-            onClick={this.openModal}
-            type="button"
-            className="btn btn-primary"
-          >
-            Detalhes da OS
-          </button>
-        </div>
+      <div className="inLine">
+        <img
+          src={details}
+          alt="Detalhes da OS"
+          className="action center"
+          onClick={this.openModal}
+        />
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}
@@ -209,11 +208,27 @@ class OsDetailsModal extends React.Component {
                   <label>{this.state.osSelected.detalhesOS}</label>
                 </div>
               </div>
+              <div className="center">
+                {this.props.situation !== "closed" ? (
+                  <div className="inLine">
+                    <AssociateUserModal os={this.props.os} />
+                  </div>
+                ) : (
+                  <div />
+                )}
+                {this.props.situation === "inProgress" ? (
+                  <div className="inLine">
+                    <CloseOSModal os={this.props.os} />
+                  </div>
+                ) : (
+                  <div />
+                )}
+              </div>
               <div className="container">
                 <div className="text-center">
-                  <h4 className="title bold">Evento das OS</h4>
+                  <h4 className="title bold">Eventos da OS</h4>
                 </div>
-                <div>
+                <div className="form-group bold">
                   <ReactTable
                     minRows={0}
                     data={this.state.events}

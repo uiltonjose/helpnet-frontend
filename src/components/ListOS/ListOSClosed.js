@@ -83,8 +83,8 @@ class ListOSClosed extends Component {
       columns.push({
         id: "action",
         accessor: row => (
-          <div>
-            <OsDetailsModal os={row} />
+          <div className="center">
+            <OsDetailsModal os={row} situation="closed" />
           </div>
         ),
         Header: "Ação"
