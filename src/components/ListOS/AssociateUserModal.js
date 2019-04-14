@@ -7,6 +7,7 @@ import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Spinner from "../ui/Spinner";
+import technical from "../../imgs/technical-support.png";
 
 const changeSituation = API.changeSituation;
 const listByProviderId = API.listByProviderId;
@@ -184,16 +185,13 @@ class AssociateUserModal extends React.Component {
 
   render() {
     return (
-      <div>
-        <div className="blue">
-          <button
-            onClick={this.openModal}
-            type="button"
-            className="btn btn-primary"
-          >
-            {this.state.actionFromList}
-          </button>
-        </div>
+      <div className="inLine">
+        <img
+          alt={this.state.actionFromList}
+          src={technical}
+          className="action center"
+          onClick={this.openModal}
+        />
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}

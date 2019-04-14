@@ -14,6 +14,7 @@ import { get } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
 import CloseOSModal from "./CloseOSModal";
 import AssociateUserModal from "./AssociateUserModal";
+import OsDetailsModal from "./OsDetailsModal";
 
 const listOsByProviderIdAndInProgress = Api.listOsByProviderIdAndInProgress;
 
@@ -82,9 +83,10 @@ class ListOSInProgress extends Component {
       columns.push({
         id: "action",
         accessor: row => (
-          <div>
-            <CloseOSModal os={row} />
+          <div className="center">
+            <OsDetailsModal os={row} situation="inProgress" />
             <AssociateUserModal action="changeResponsable" os={row} />
+            <CloseOSModal os={row} />
           </div>
         ),
         Header: "Ação"

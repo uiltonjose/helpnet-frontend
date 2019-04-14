@@ -24,3 +24,15 @@
   border: 0.5px;
   padding: 10px;
 }
+
+.action {
+  height: 30px;
+}
+
+.center {
+  text-align: center;
+}
+
+.inLine {
+  display: inline-block;
+}

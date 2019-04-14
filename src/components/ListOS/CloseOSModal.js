@@ -9,6 +9,7 @@ import {
   unavailableServiceAlert,
   showMessageOK
 } from "../../util/AlertDialogUtil";
+import finish from "../../imgs/finished.png";
 
 const changeSituation = API.changeSituation;
 
@@ -139,16 +140,14 @@ class AssociateUserModal extends React.Component {
 
   render() {
     return (
-      <div>
-        <div className="blue">
-          <button
-            onClick={this.openModal}
-            type="button"
-            className="btn btn-primary"
-          >
-            Finalizar a OS
-          </button>
-        </div>
+      <div className="inLine">
+        <img
+          data-
+          src={finish}
+          alt="Detalhes da OS"
+          className="action center"
+          onClick={this.openModal}
+        />
         <Modal
           isOpen={this.state.modalIsOpen}
           onAfterOpen={this.afterOpenModal}

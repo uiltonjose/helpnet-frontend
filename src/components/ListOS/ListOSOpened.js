@@ -13,6 +13,7 @@ import { formatToTimeZone } from "date-fns-timezone";
 import { get } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";
 import AssociateUserModal from "./AssociateUserModal";
+import OsDetailsModal from "./OsDetailsModal";
 
 const listOsByProviderIdAndSituationOpened =
   Api.listOsByProviderIdAndSituationOpened;
@@ -82,7 +83,8 @@ class ListOSOpened extends Component {
       columns.push({
         id: "action",
         accessor: row => (
-          <div>
+          <div className="center">
+            <OsDetailsModal os={row} />
             <AssociateUserModal os={row} />
           </div>
         ),
