@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
-import "./login.css";
+import "../../styles/components/login.scss";
 import { firebaseApp } from "../../firebase";
 import { get, post, put } from "../../util/RequestUtil";
 import Api from "../../util/Endpoints";

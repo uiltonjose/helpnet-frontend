@@ -1,10 +1,18 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import { showModalLogout } from "./LogoutModal";
-import logo from "../../imgs/logo-default.png";
-import $ from "jquery";
 import { firebaseApp } from "./../../firebase";
+import logo from "../../imgs/logo-default.png";
+import "../../styles/components/topbar.scss";
+import $ from "jquery";
 
+const styles = {
+  logo: {
+    height: "100px",
+    width: "100px",
+    marginLeft: "16px"
+  }
+};
 class NavBar extends Component {
   constructor(props) {
     super(props);
@@ -34,7 +42,7 @@ class NavBar extends Component {
     return (
       <div>
         {this.state.isLogged && (
-          <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+          <nav className="navbar navbar-expand-lg navbar-dark bg-primary topbar">
             <img src={logo} alt="Help Net" style={styles.logo} />
 
             <button
@@ -88,12 +96,6 @@ class NavBar extends Component {
     );
   }
 }
-
-const styles = {
-  logo: {
-    height: 1150
-  }
-};
 
 export default withRouter(NavBar);
 

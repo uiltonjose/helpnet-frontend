@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "react-modal";
 import API from "../../util/Endpoints";
-import "./modal.css";
+import "../../styles/components/modal.scss";
 import { post } from "../../util/RequestUtil";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Spinner from "../ui/Spinner";

@@ -1,0 +1,27 @@
+/* ====================
+   #COMPONENT TOPBAR
+   ==================== */
+
+@import "../base";
+
+.topbar {
+  padding: 10px 0 !important;
+  background: $accent !important;
+  box-shadow: 0 0 0 1px rgba($primary, 0.02),
+    0 1.65px 8px -2px rgba($primary, 0.08) !important;
+
+  #providerLogin {
+    display: inline-block;
+    margin-right: 10px;
+    color: black;
+  }
+
+  #logout-btn {
+    display: inline-block;
+  }
+
+  #logout-group {
+    margin-top: 10px;
+    margin-right: 16px;
+  }
+}
