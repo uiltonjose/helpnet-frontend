@@ -1,0 +1,17 @@
+/* ====================
+   #CORE SETTINGS
+   ==================== */
+
+$global-baseline: 6px !default;
+$global-font-size: 16px !default;
+$global-line-height: 24px !default;
+
+$global-font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+  "Segoe UI Symbol" !default;
+$global-font-secondary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+  "Segoe UI Symbol" !default;
+
+$global-breakpoint-lg: 992px;
+$global-breakpoint-md: 768px;

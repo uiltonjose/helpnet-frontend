@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
-import "./login.css";
+import "../../styles/components/login.scss";
 import { firebaseApp } from "../../firebase";
 
 class ForgotPassword extends Component {

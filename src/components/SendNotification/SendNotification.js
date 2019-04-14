@@ -4,7 +4,7 @@ import checkboxHOC from "react-table/lib/hoc/selectTable";
 import Chance from "chance";
 import { confirmAlert } from "react-confirm-alert";
 import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
-import "./sendNotification.css";
+import "../../styles/components/sendNotification.scss";
 import "react-table/react-table.css";
 import "rc-checkbox/assets/index.css";
 import "react-confirm-alert/src/react-confirm-alert.css";
@@ -456,7 +456,7 @@ class SendNotification extends Component {
                   onChange={this.handleBlockOpenOS}
                 />
                 <label className="margin10">
-                  Bloquear abertura de OSs para os clientes selecionados
+                  Bloquear abertura de OS para os clientes selecionados
                 </label>
               </div>
               <CheckboxTable
