@@ -456,7 +456,7 @@ class SendNotification extends Component {
                   onChange={this.handleBlockOpenOS}
                 />
                 <label className="margin10">
-                  Bloquear abertura de OSs para os clientes selecionados
+                  Bloquear abertura de OS para os clientes selecionados
                 </label>
               </div>
               <CheckboxTable

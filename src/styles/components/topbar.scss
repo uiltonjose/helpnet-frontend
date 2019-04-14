@@ -5,24 +5,10 @@
 @import "../base";
 
 .topbar {
-  padding: 12px 0;
-  background: $white;
+  padding: 10px 0 !important;
+  background: $accent !important;
   box-shadow: 0 0 0 1px rgba($primary, 0.02),
-    0 1.65px 8px -2px rgba($primary, 0.08);
-
-  &-content {
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: row;
-    align-items: center;
-    align-content: center;
-    padding: 0 1rem;
-    height: 48px;
-
-    > * {
-      margin-right: $global-baseline * 2;
-    }
-  }
+    0 1.65px 8px -2px rgba($primary, 0.08) !important;
 
   #providerLogin {
     display: inline-block;
@@ -36,5 +22,6 @@
 
   #logout-group {
     margin-top: 10px;
+    margin-right: 16px;
   }
 }

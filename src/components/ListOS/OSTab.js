@@ -10,8 +10,8 @@ class OSTab extends Component {
     return (
       <Tabs>
         <TabList>
-          <Tab>OSs Abertas</Tab>
-          <Tab>OSs em atendimento</Tab>
+          <Tab>OS Abertas</Tab>
+          <Tab>OS em atendimento</Tab>
           <Tab>OS concluídas</Tab>
         </TabList>
 
