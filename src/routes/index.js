@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import Switch from "react-router-dom/Switch";
 
-import NavBar from "./../components/NavBar/NavBar";
+import NavBar from "../components/Menu/NavBar";
 import Home from "./../components/Home/Home";
 import MyData from "./../components/MyData/MyData";
 import SendNotification from "./../components/SendNotification/SendNotification";
@@ -45,7 +45,7 @@ const NonAuthRoute = function({ Component, ...rest }) {
 export default () => (
   <BrowserRouter>
     <div>
-      <div className="container">
+      <div>
         <Switch>
           <AuthRoute exact path="/" Component={Home} />
           <AuthRoute exact path="/app" Component={Home} />

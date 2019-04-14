@@ -2,7 +2,7 @@ import React from "react";
 import ReactTable from "react-table";
 import Modal from "react-modal";
 import API from "../../util/Endpoints";
-import "./modal.css";
+import "../../styles/components/modal.scss";
 import { get } from "../../util/RequestUtil";
 import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
 import "react-confirm-alert/src/react-confirm-alert.css";

@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "react-modal";
 import API from "../../util/Endpoints";
-import "./modal.css";
+import "../../styles/components/modal.scss";
 import { post, get } from "../../util/RequestUtil";
 import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
 import { confirmAlert } from "react-confirm-alert";
