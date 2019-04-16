@@ -143,110 +143,126 @@ class OsDetailsModal extends React.Component {
             </div>
           ) : (
             <div className="container scrollable">
-              <div className="text-center">
-                <h4 className="title bold">{this.state.title}</h4>
-              </div>
               <div className="container">
-                <div className="left">
-                  <label className="bold">Número OS:&nbsp;</label>
-                  <label>{this.state.osSelected.numeroOS}</label>
-                </div>
-                <div className="right">
-                  <label className="bold">CPF do cliente:&nbsp; </label>
-                  <label>{this.state.osSelected.cpf_cnpj}</label>
-                </div>
-                <div>
-                  <label className="bold">Nome do cliente:&nbsp;</label>
-                  <label>{this.state.osSelected.nomeCliente}</label>
-                </div>
-                <div>
-                  <label className="bold">Referência:&nbsp;</label>
-                  <label>{this.state.osSelected.nome_res}</label>
-                </div>
-                <div>
-                  <label className="bold">Data do Cadastro:&nbsp;</label>
-                  <label>{this.state.osSelected.dataCadastroProvedor}</label>
-                </div>
-                <div className="left">
-                  <label className="bold">Login:&nbsp;</label>
-                  <label>{this.state.osSelected.login}</label>
-                </div>
-                <div className="left">
-                  <label className="bold">Plano:&nbsp;</label>
-                  <label>{this.state.osSelected.plano}</label>
-                </div>
-                <div className="left">
-                  <label className="bold">Telefone:&nbsp;</label>
-                  <label>{this.state.osSelected.fone}</label>
-                </div>
-                <div className="left">
-                  <label className="bold">Celular:&nbsp;</label>
-                  <label>{this.state.osSelected.celular}</label>
-                </div>
-                <div className="left">
-                  <label className="bold">Endereço:&nbsp;</label>
-                  <label>{this.state.osSelected.endereco}</label>
-                </div>
-                <div className="left">
-                  <label className="bold">Número:&nbsp;</label>
-                  <label>{this.state.osSelected.numero}</label>
-                </div>
-                <div className="left">
-                  <label className="bold">Bairro:&nbsp;</label>
-                  <label>{this.state.osSelected.bairro}</label>
-                </div>
-                <div className="left">
-                  <label className="bold">Cidade:&nbsp;</label>
-                  <label>{this.state.osSelected.cidade}</label>
-                </div>
-                <div>
-                  <label className="bold">Problema:&nbsp;</label>
-                  <label>{this.state.osSelected.problema}</label>
-                </div>
-                <div>
-                  <label className="bold">Detalhe da OS:&nbsp;</label>
-                  <label>{this.state.osSelected.detalhesOS}</label>
-                </div>
-              </div>
-              <div className="center">
-                {this.props.situation !== "closed" ? (
-                  <div className="inLine">
-                    <AssociateUserModal os={this.props.os} />
+                <div className="panel">
+                  <div className="text-center">
+                    <h4 className="title bold">Dados do cliente</h4>
                   </div>
-                ) : (
-                  <div />
-                )}
-                {this.props.situation === "inProgress" ? (
-                  <div className="inLine">
-                    <CloseOSModal os={this.props.os} />
+                  <div className="right">
+                    <label className="bold">CPF do cliente:&nbsp; </label>
+                    <label>{this.state.osSelected.cpf_cnpj}</label>
                   </div>
-                ) : (
-                  <div />
-                )}
-              </div>
-              <div className="container">
-                <div className="text-center">
-                  <h4 className="title bold">Eventos da OS</h4>
-                </div>
-                <div className="form-group bold">
-                  <ReactTable
-                    minRows={0}
-                    data={this.state.events}
-                    columns={columns}
-                    loadingText={"Carregando..."}
-                    noDataText={"Lista vazia."}
-                    showPagination={false}
-                  />
-                </div>
-                <div align="right" className="topnav search-container">
                   <div>
-                    <button
-                      onClick={this.closeModal}
-                      type="button"
-                      className="btn btn-primary"
-                    >
-                      Fechar
-                    </button>
+                    <label className="bold">Nome do cliente:&nbsp;</label>
+                    <label>{this.state.osSelected.nomeCliente}</label>
+                  </div>
+                  <div>
+                    <label className="bold">Referência:&nbsp;</label>
+                    <label>{this.state.osSelected.nome_res}</label>
+                  </div>
+                  <div>
+                    <label className="bold">Data do Cadastro:&nbsp;</label>
+                    <label>{this.state.osSelected.dataCadastroProvedor}</label>
+                  </div>
+                  <div className="left">
+                    <label className="bold">Login:&nbsp;</label>
+                    <label>{this.state.osSelected.login}</label>
+                  </div>
+                  <div className="left">
+                    <label className="bold">Plano:&nbsp;</label>
+                    <label>{this.state.osSelected.plano}</label>
+                  </div>
+                  <div className="left">
+                    <label className="bold">Telefone:&nbsp;</label>
+                    <label>{this.state.osSelected.fone}</label>
+                  </div>
+                  <div className="left">
+                    <label className="bold">Celular:&nbsp;</label>
+                    <label>{this.state.osSelected.celular}</label>
+                  </div>
+                </div>
+                <div className="panel">
+                  <div className="text-center">
+                    <h4 className="title bold">Endereço</h4>
+                  </div>
+                  <div className="left">
+                    <label className="bold">Endereço:&nbsp;</label>
+                    <label>{this.state.osSelected.endereco}</label>
+                  </div>
+                  <div className="left">
+                    <label className="bold">Número:&nbsp;</label>
+                    <label>{this.state.osSelected.numero}</label>
+                  </div>
+                  <div className="left">
+                    <label className="bold">Bairro:&nbsp;</label>
+                    <label>{this.state.osSelected.bairro}</label>
+                  </div>
+                  <div className="left">
+                    <label className="bold">Cidade:&nbsp;</label>
+                    <label>{this.state.osSelected.cidade}</label>
+                  </div>
+                </div>
+                <div className="panel">
+                  <div className="text-center">
+                    <h4 className="title bold">Ordem de Serviço</h4>
+                  </div>
+                  <div className="left">
+                    <label className="bold">Número OS:&nbsp;</label>
+                    <label>{this.state.osSelected.numeroOS}</label>
+                  </div>
+                  <div>
+                    <label className="bold">Problema:&nbsp;</label>
+                    <label>{this.state.osSelected.problema}</label>
+                  </div>
+                  <div>
+                    <label className="bold">Detalhe da OS:&nbsp;</label>
+                    <label>{this.state.osSelected.detalhesOS}</label>
+                  </div>
+                </div>
+                <div>
+                  <div className="center">
+                    {this.props.situation !== "closed" ? (
+                      <div className="inLine">
+                        <AssociateUserModal os={this.props.os} />
+                      </div>
+                    ) : (
+                      <div />
+                    )}
+                    {this.props.situation === "inProgress" ? (
+                      <div className="inLine">
+                        <CloseOSModal os={this.props.os} />
+                      </div>
+                    ) : (
+                      <div />
+                    )}
+                  </div>
+                </div>
+                <div className="panel">
+                  <div className="text-center">
+                    <h4 className="title bold">Eventos da OS</h4>
+                  </div>
+                  <div className="form-group bold">
+                    <ReactTable
+                      minRows={0}
+                      data={this.state.events}
+                      columns={columns}
+                      loadingText={"Carregando..."}
+                      noDataText={"Lista vazia."}
+                      showPagination={false}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div align="right" className="topnav search-container">
+                    <div>
+                      <button
+                        onClick={this.closeModal}
+                        type="button"
+                        className="btn btn-primary"
+                      >
+                        Fechar
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
