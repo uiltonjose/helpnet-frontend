@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import { Button, TextField, Typography } from "@material-ui/core";
 import "../../styles/components/login.scss";
 import { firebaseApp } from "../../firebase";
 
@@ -50,66 +51,77 @@ class ForgotPassword extends Component {
 
   render() {
     return (
-      <div className="card card-container">
-        {!this.state.emailSent && (
-          <div>
-            <h3>Vamos encontrar sua conta</h3>
-            <p style={{ marginTop: "16px" }}>Por favor, preencha seu email.</p>
+      <div className="signin-page">
+        <div className="card card-container">
+          {!this.state.emailSent && (
+            <div>
+              <Typography>Vamos encontrar sua conta</Typography>
+              <Typography style={{ marginTop: "16px" }}>
+                Por favor, preencha seu email.
+              </Typography>
 
-            <div id="form-signin" className="form-signin">
-              <input
-                type="email"
-                id="inputEmail"
-                className="form-control"
-                placeholder="Endereço de email"
-                required
-                onChange={event => this.setState({ email: event.target.value })}
-              />
-              <button
-                className="btn btn-lg btn-primary btn-block btn-signin"
-                type="button"
-                onClick={() => this.forgotPasswordHandler()}
-              >
-                Procurar
-              </button>
+              <div id="form-signin" className="form-signin">
+                <TextField
+                  type="email"
+                  id="inputEmail"
+                  className="form-signin-input"
+                  label="Endereço de email"
+                  required
+                  onChange={event =>
+                    this.setState({ email: event.target.value })
+                  }
+                />
+                <Button
+                  className="form-signin-button"
+                  variant="contained"
+                  color="primary"
+                  type="button"
+                  onClick={() => this.forgotPasswordHandler()}
+                >
+                  Procurar
+                </Button>
 
-              <button
-                className="btn btn-lg btn-block btn-signin-cancel"
+                <Button
+                  className="form-signin-button"
+                  variant="contained"
+                  type="button"
+                  onClick={() => this.goToSignPage()}
+                >
+                  Cancelar
+                </Button>
+
+                {this.state.errorMessage && (
+                  <Typography color="secondary">
+                    <strong>Oops!</strong> {this.state.errorMessage}
+                  </Typography>
+                )}
+              </div>
+            </div>
+          )}
+          {this.state.emailSent && (
+            <div className="form-signin">
+              <Typography>Enviamos um link para o seu email!</Typography>
+              <Typography style={{ margin: "16px 0", fontSize: "16px" }}>
+                Por favor, verifique seu email e siga as instruções.
+              </Typography>
+
+              <Button
+                className="form-signin-button"
+                variant="contained"
+                color="primary"
                 type="button"
                 onClick={() => this.goToSignPage()}
               >
-                Cancelar
-              </button>
+                Finalizar
+              </Button>
 
-              {this.state.errorMessage && (
-                <div className="alert alert-danger">
-                  <strong>Oops!</strong> {this.state.errorMessage}
-                </div>
-              )}
+              <Typography style={{ marginTop: "20px", fontSize: "14px" }}>
+                Dica: Se não consegue encontrar o email que enviamos, verifique
+                seus spams.
+              </Typography>
             </div>
-          </div>
-        )}
-        {this.state.emailSent && (
-          <div>
-            <h3>Enviamos um link para o seu email!</h3>
-            <p style={{ marginTop: "16px", fontSize: "18px" }}>
-              Por favor, verifique seu email e siga as instruções.
-            </p>
-
-            <button
-              className="btn btn-lg btn-primary btn-block btn-signin"
-              type="button"
-              onClick={() => this.goToSignPage()}
-            >
-              Finalizar
-            </button>
-
-            <p style={{ marginTop: "20px", fontSize: "14px" }}>
-              Dica: Se não consegue encontrar o email que enviamos, verifique
-              seus spams.
-            </p>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     );
   }

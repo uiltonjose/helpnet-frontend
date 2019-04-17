@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { Link as RouterLink, withRouter } from "react-router-dom";
+import { Button, TextField, Link, Typography } from "@material-ui/core";
+
 import "../../styles/components/login.scss";
 import { firebaseApp } from "../../firebase";
 import { get, put } from "../../util/RequestUtil";
@@ -149,98 +151,120 @@ class SignIn extends Component {
 
   render() {
     return (
-      <div className="card card-container">
-        <img
-          id="profile-img"
-          className="profile-img-card"
-          alt="Logo"
-          src={require("./images/logo-default.png")}
-        />
-        <p id="profile-name" className="profile-name-card" />
+      <div className="signin-page">
+        <div className="card card-container">
+          <img
+            id="profile-img"
+            className="profile-img-card"
+            alt="Logo"
+            src={require("./images/logo-default.png")}
+          />
+          <p id="profile-name" className="profile-name-card" />
 
-        {!this.state.pendingRegister && (
-          <div>
-            <div id="form-signin" className="form-signin">
-              <input
-                type="email"
-                id="inputEmail"
-                className="form-control"
-                placeholder="Endereço de email"
-                required
-                onChange={event => this.setState({ email: event.target.value })}
-              />
-              <input
-                type="password"
-                id="inputPassword"
-                className="form-control"
-                placeholder="Senha"
+          {!this.state.pendingRegister && (
+            <div>
+              <div id="form-signin" className="form-signin">
+                <TextField
+                  variant="outlined"
+                  type="email"
+                  id="inputEmail"
+                  className="form-signin-input"
+                  label="Endereço de email"
+                  required
+                  onChange={event =>
+                    this.setState({
+                      email: event.target.value,
+                      errorMessage: undefined
+                    })
+                  }
+                />
+                <TextField
+                  variant="outlined"
+                  type="password"
+                  id="inputPassword"
+                  className="form-signin-input"
+                  label="Senha"
+                  required
+                  onChange={event =>
+                    this.setState({
+                      password: event.target.value,
+                      errorMessage: undefined
+                    })
+                  }
+                />
+
+                {this.state.isLoading ? (
+                  <Spinner />
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className="form-signin-button"
+                    onClick={() => this.signInHandler()}
+                  >
+                    Logar
+                  </Button>
+                )}
+              </div>
+
+              {this.state.errorMessage && (
+                <Typography color="secondary" style={{ marginTop: "10px" }}>
+                  <strong>Oops!</strong> {this.state.errorMessage}
+                </Typography>
+              )}
+
+              <Typography style={{ marginTop: "10px" }}>
+                <Link component={RouterLink} to={"/forgotpassword"}>
+                  Esqueceu a senha?
+                </Link>
+              </Typography>
+
+              <Typography style={{ marginTop: "10px" }}>
+                Não possui cadastro?
+                <span style={{ marginLeft: "6px" }}>
+                  <Link
+                    component={RouterLink}
+                    className="general-link"
+                    to={"/signup"}
+                  >
+                    Cadastre-se
+                  </Link>
+                </span>
+              </Typography>
+            </div>
+          )}
+
+          {this.state.pendingRegister && (
+            <div className="form-signin">
+              <Typography
+                style={{ textAlign: "start" }}
+                className="profile-name-card"
+              >
+                Escolha o provedor:
+              </Typography>
+              <TextField
+                type="text"
+                id="inputCodeConfirmation"
+                style={{ marginTop: "10px" }}
+                className="form-signin-input"
+                label="Insira o código de confirmação"
                 required
                 onChange={event =>
-                  this.setState({ password: event.target.value })
+                  this.setState({ confirmationCode: event.target.value })
                 }
               />
-
-              {this.state.isLoading ? (
-                <Spinner />
-              ) : (
-                <button
-                  className="btn btn-lg btn-primary btn-block btn-signin"
-                  type="button"
-                  onClick={() => this.signInHandler()}
-                >
-                  Logar
-                </button>
-              )}
+              <Button
+                className="form-signin-button"
+                variant="contained"
+                color="primary"
+                type="button"
+                onClick={() => this.handlerChooseProviderAndContinue()}
+              >
+                Continuar
+              </Button>
             </div>
-
-            <Link className="general-link" to={"/forgotpassword"}>
-              Esqueceu a senha?
-            </Link>
-
-            <div style={{ marginTop: "10px" }}>
-              Não possui cadastro?
-              <span style={{ marginLeft: "6px" }}>
-                <Link className="general-link" to={"/signup"}>
-                  Cadastre-se
-                </Link>
-              </span>
-            </div>
-          </div>
-        )}
-
-        {this.state.pendingRegister && (
-          <div>
-            <p style={{ textAlign: "start" }} className="profile-name-card">
-              Escolha o provedor:
-            </p>
-            <div style={{ marginTop: "5px" }} id="providerContent" />
-            <input
-              type="text"
-              id="inputCodeConfirmation"
-              style={{ marginTop: "10px" }}
-              className="form-control"
-              placeholder="Insira o código de confirmação"
-              required
-              onChange={event =>
-                this.setState({ confirmationCode: event.target.value })
-              }
-            />
-            <button
-              style={{ marginTop: "10px" }}
-              className="btn btn-lg btn-primary btn-block btn-signin"
-              type="button"
-              onClick={() => this.handlerChooseProviderAndContinue()}
-            >
-              Continuar
-            </button>
-          </div>
-        )}
-
-        {this.state.errorMessage && (
-          <div className="alert alert-danger">
-            <strong>Oops!</strong> {this.state.errorMessage}
-          </div>
-        )}
+          )}
+        </div>
       </div>
     );
   }

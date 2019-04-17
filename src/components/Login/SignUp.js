@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import { Link as RouterLink, withRouter } from "react-router-dom";
+import { Button, TextField, Link, Typography } from "@material-ui/core";
 import "../../styles/components/login.scss";
 import { firebaseApp } from "../../firebase";
 import { get, post, put } from "../../util/RequestUtil";
@@ -157,92 +158,104 @@ class SignUp extends Component {
 
   render() {
     return (
-      <div className="card card-container">
-        <img
-          id="profile-img"
-          className="profile-img-card"
-          alt="Logo"
-          src={require("./images/logo-default.png")}
-        />
-        <p id="dummySpace" className="profile-name-card" />
+      <div className="signin-page">
+        <div className="card card-container">
+          <img
+            id="profile-img"
+            className="profile-img-card"
+            alt="Logo"
+            src={require("./images/logo-default.png")}
+          />
+          <p id="dummySpace" className="profile-name-card" />
 
-        {!this.state.pendingRegister && (
-          <div>
-            <div id="form-signin" className="form-signin">
+          {!this.state.pendingRegister && (
+            <div>
+              <div id="form-signin" className="form-signin">
+                <TextField
+                  variant="outlined"
+                  type="email"
+                  id="inputEmail"
+                  className="form-signin-input"
+                  label="Endereço de email"
+                  required
+                  onChange={event =>
+                    this.setState({ email: event.target.value })
+                  }
+                />
+                <TextField
+                  variant="outlined"
+                  type="password"
+                  id="inputPassword"
+                  className="form-signin-input"
+                  label="Senha (no mínimo 6 caracteres)"
+                  required
+                  onChange={event =>
+                    this.setState({ password: event.target.value })
+                  }
+                />
+                {this.state.isLoading ? (
+                  <Spinner />
+                ) : (
+                  <Button
+                    className="form-signin-button"
+                    variant="contained"
+                    color="primary"
+                    type="button"
+                    onClick={() => this.signUpHandler()}
+                  >
+                    Cadastrar
+                  </Button>
+                )}
+              </div>
+              <Typography>
+                Já possui cadastro?
+                <span style={{ marginLeft: "6px" }}>
+                  <Link
+                    component={RouterLink}
+                    className="general-link"
+                    to={"/signin"}
+                  >
+                    Faça seu login
+                  </Link>
+                </span>
+              </Typography>
+            </div>
+          )}
+
+          {this.state.pendingRegister && (
+            <div>
+              <p style={{ textAlign: "start" }} className="profile-name-card">
+                Escolha o provedor:
+              </p>
+              <div style={{ marginTop: "5px" }} id="providerContent" />
               <input
-                type="email"
-                id="inputEmail"
+                type="text"
+                id="inputCodeConfirmation"
+                style={{ marginTop: "10px" }}
                 className="form-control"
-                placeholder="Endereço de email"
-                required
-                onChange={event => this.setState({ email: event.target.value })}
-              />
-              <input
-                type="password"
-                id="inputPassword"
-                className="form-control"
-                placeholder="Senha (no mínimo 6 caracteres)"
+                placeholder="Insira o código de confirmação"
                 required
                 onChange={event =>
-                  this.setState({ password: event.target.value })
+                  this.setState({ confirmationCode: event.target.value })
                 }
               />
-              {this.state.isLoading ? (
-                <Spinner />
-              ) : (
-                <button
-                  className="btn btn-lg btn-primary btn-block btn-signin"
-                  type="button"
-                  onClick={() => this.signUpHandler()}
-                >
-                  Cadastrar
-                </button>
-              )}
+              <button
+                style={{ marginTop: "10px" }}
+                className="btn btn-lg btn-primary btn-block btn-signin"
+                type="button"
+                onClick={() => this.handlerChooseProviderAndContinue()}
+              >
+                Continuar
+              </button>
             </div>
-            <div>
-              Já possui cadastro?
-              <span style={{ marginLeft: "6px" }}>
-                <Link className="general-link" to={"/signin"}>
-                  Faça seu login
-                </Link>
-              </span>
+          )}
+
+          {this.state.errorMessage && (
+            <div style={{ marginTop: "10px" }} className="alert alert-danger">
+              <strong>Oops!</strong> {this.state.errorMessage}
             </div>
-          </div>
-        )}
-
-        {this.state.pendingRegister && (
-          <div>
-            <p style={{ textAlign: "start" }} className="profile-name-card">
-              Escolha o provedor:
-            </p>
-            <div style={{ marginTop: "5px" }} id="providerContent" />
-            <input
-              type="text"
-              id="inputCodeConfirmation"
-              style={{ marginTop: "10px" }}
-              className="form-control"
-              placeholder="Insira o código de confirmação"
-              required
-              onChange={event =>
-                this.setState({ confirmationCode: event.target.value })
-              }
-            />
-            <button
-              style={{ marginTop: "10px" }}
-              className="btn btn-lg btn-primary btn-block btn-signin"
-              type="button"
-              onClick={() => this.handlerChooseProviderAndContinue()}
-            >
-              Continuar
-            </button>
-          </div>
-        )}
-
-        {this.state.errorMessage && (
-          <div style={{ marginTop: "10px" }} className="alert alert-danger">
-            <strong>Oops!</strong> {this.state.errorMessage}
-          </div>
-        )}
+          )}
+        </div>
       </div>
     );
   }
