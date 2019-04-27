@@ -64,7 +64,7 @@ class SignIn extends Component {
     )}`;
 
     get(getUserInfoAPI).then(resp => {
-      if ((resp && resp.data.code === 200) || resp.data.code === 304) {
+      if (resp && (resp.data.code === 200 || resp.data.code === 304)) {
         const userInfoData = resp.data.userInfo;
         if (userInfoData.status === "Ativo") {
           localStorage.setItem("isLogged", true);

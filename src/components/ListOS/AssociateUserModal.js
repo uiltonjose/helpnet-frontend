@@ -120,7 +120,7 @@ class AssociateUserModal extends React.Component {
       const body = this.builderEventOs(this.state.os);
 
       post(url, body).then(resp => {
-        if (resp.data.code === 200) {
+        if (resp && resp.data.code === 200) {
           this.closeModal();
           this.successChangeSituationOS();
           this.setState({ isLoading: false });

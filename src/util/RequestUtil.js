@@ -2,7 +2,7 @@
 const SERVER_HOST = process.env.REACT_APP_SERVER_URL;
 
 const getEndpoint = api => {
-  return SERVER_HOST + api;
+  return `${SERVER_HOST}${api}`;
 };
 
 const getHeaderAuthorization = () => {
