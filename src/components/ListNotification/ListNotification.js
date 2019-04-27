@@ -42,9 +42,9 @@ class ListNotifications extends Component {
     const providerId = this.state.userInfo["provedor_id"];
     this.setState({ providerId });
     const url = `${listNotificationsAPI}${providerId}`;
-    get(url, resp => {
-      if (resp !== "") {
-        const respJson = JSON.parse(resp);
+    get(url).then(resp => {
+      if (resp) {
+        const respJson = resp.data;
         const notificationsAll = respJson.data;
         if (notificationsAll && notificationsAll.length > 0) {
           const columns = this.getColumnsNotifications(notificationsAll);

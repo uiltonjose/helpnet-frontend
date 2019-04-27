@@ -1,38 +1,33 @@
-﻿const SERVER_HOST = process.env.REACT_APP_SERVER_URL;
-
-const createCORSRequest = (method, url) => {
-  return new XMLHttpRequest();
-};
-
-const httpRequest = (method, url, body, callback) => {
-  console.log(url);
-  const xmlHttp = createCORSRequest(method, url);
-  xmlHttp.onreadystatechange = () => {
-    if (xmlHttp.readyState === 4) {
-      if (xmlHttp.status === 200) {
-        callback(xmlHttp.responseText);
-      } else {
-        callback(xmlHttp.response);
-      }
-    }
-  };
-  xmlHttp.open(method, url, true); // true for asynchronous
-  xmlHttp.setRequestHeader("Content-Type", "application/json");
-  xmlHttp.send(JSON.stringify(body));
-};
+﻿const axios = require("axios");
+const SERVER_HOST = process.env.REACT_APP_SERVER_URL;
 
 const getEndpoint = api => {
   return SERVER_HOST + api;
 };
 
-export const get = (url, callback) => {
-  httpRequest("GET", getEndpoint(url), null, callback);
+const getHeaderAuthorization = () => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    return {
+      headers: {
+        Authorization: token
+      }
+    };
+  }
+  return {};
 };
 
-export const post = (url, body, callback) => {
-  httpRequest("POST", getEndpoint(url), body, callback);
+export const get = api => {
+  const header = getHeaderAuthorization();
+  return axios.get(getEndpoint(api), header);
 };
 
-export const put = (url, body, callback) => {
-  httpRequest("PUT", getEndpoint(url), body, callback);
+export const post = (api, body) => {
+  const header = getHeaderAuthorization();
+  return axios.post(getEndpoint(api), body, header);
+};
+
+export const put = (api, body) => {
+  const header = getHeaderAuthorization();
+  return axios.put(getEndpoint(api), body, header);
 };

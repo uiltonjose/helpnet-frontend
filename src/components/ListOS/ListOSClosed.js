@@ -43,9 +43,9 @@ class ListOSClosed extends Component {
     const providerId = this.state.userInfo["provedor_id"];
     this.setState({ providerId });
     const url = `${listOsByProviderIdAndSituationClosed}${providerId}`;
-    get(url, resp => {
-      if (resp !== "") {
-        const jsonResponse = JSON.parse(resp);
+    get(url).then(resp => {
+      if (resp) {
+        const jsonResponse = resp.data;
         if (jsonResponse) {
           const listOS = jsonResponse.message;
           const columns = this.getColumnsOS(listOS);

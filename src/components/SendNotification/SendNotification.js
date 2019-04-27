@@ -81,9 +81,9 @@ class SendNotification extends Component {
 
   loadDefaultMessages = () => {
     const url = listDefaultMessageForNotificationAPI;
-    get(url, resp => {
-      if (resp !== "") {
-        const jsonResp = JSON.parse(resp);
+    get(url).then(resp => {
+      if (resp) {
+        const jsonResp = resp.data;
         const listDefaultMessages = jsonResp.data;
         this.setState({ listDefaultMessages });
       } else {
@@ -101,9 +101,9 @@ class SendNotification extends Component {
     this.setState({ providerId, userId });
     const url = `${listCustomersByProviderIdAPI}${providerId}`;
 
-    get(url, resp => {
-      if (resp !== "") {
-        const jsonResp = JSON.parse(resp);
+    get(url).then(resp => {
+      if (resp) {
+        const jsonResp = resp.data;
         if (jsonResp) {
           const listCustomer = jsonResp.message;
           const columns = this.getColumnsCustomers(listCustomer);
@@ -241,12 +241,12 @@ class SendNotification extends Component {
       this.setState({ errorMessage, isLoading: false });
       window.scrollTo(0, 0);
     } else {
-      post(sendNotificationAPI, bodyNotification, function(resp) {
-        const result = JSON.parse(resp);
-        let messageAlert = "";
-        if (result.code === 200) {
+      post(sendNotificationAPI, bodyNotification).then(resp => {
+        let messageAlert;
+        const statusCode = resp && resp.data.code;
+        if (statusCode === 200) {
           messageAlert = "Notificações enviadas com sucesso.";
-        } else if (result.code === 406) {
+        } else if (statusCode === 406) {
           messageAlert =
             "Um ou mais clientes não estão logados no Aplicativo, apenas usuários logados conseguem receber as notificações em forma de Push. Porém a mensagem será exibida na tela de notificação.";
         } else {

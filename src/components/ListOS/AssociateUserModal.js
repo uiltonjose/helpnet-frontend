@@ -67,9 +67,9 @@ class AssociateUserModal extends React.Component {
   loadResponsible = () => {
     const providerId = this.state.userInfo["provedor_id"];
     const url = `${listByProviderId}${providerId}`;
-    get(url, resp => {
-      if (resp !== "") {
-        const jsonResp = JSON.parse(resp);
+    get(url).then(resp => {
+      if (resp) {
+        const jsonResp = resp.data;
         const listResponsible = jsonResp.message;
         this.setState({ listResponsible });
       } else {
@@ -119,20 +119,13 @@ class AssociateUserModal extends React.Component {
       let url = `${changeSituation}`;
       const body = this.builderEventOs(this.state.os);
 
-      post(url, body, resp => {
-        if (resp !== "") {
-          const jsonResponse = JSON.parse(resp);
-          if (jsonResponse && jsonResponse.code === 200) {
-            this.closeModal();
-            this.successChangeSituationOS();
-            this.setState({ isLoading: false });
-          } else {
-            this.failUpdateOS();
-          }
+      post(url, body).then(resp => {
+        if (resp.data.code === 200) {
+          this.closeModal();
+          this.successChangeSituationOS();
+          this.setState({ isLoading: false });
         } else {
-          unavailableServiceAlert(() => {
-            this.setState({ isLoading: false });
-          });
+          this.failUpdateOS();
         }
       });
     }

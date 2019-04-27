@@ -64,11 +64,6 @@ class NavBar extends Component {
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to={"/myData"} id="as">
-                    Meus Dados
-                  </Link>
-                </li>
-                <li className="nav-item">
                   <Link className="nav-link" to={"/sendNotification"}>
                     Enviar Notificação
                   </Link>
@@ -76,6 +71,11 @@ class NavBar extends Component {
                 <li className="nav-item">
                   <Link className="nav-link" to={"/listNotification"}>
                     Listar Notificação
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to={"/myData"} id="as">
+                    Meus Dados
                   </Link>
                 </li>
               </ul>
