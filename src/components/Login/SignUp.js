@@ -31,11 +31,10 @@ class SignUp extends Component {
       .then(() => {
         const user = {};
         user.login = this.state.email;
-        post(Api.addUser, user, resp => {
-          const result = JSON.parse(resp);
-          if (result.code === 200) {
+        post(Api.addUser, user).then(resp => {
+          if (resp && resp.data.code === 200) {
             this.setState({
-              userId: result.userId,
+              userId: resp.data.userId,
               pendingRegister: true
             });
             this.loadProviders();
@@ -74,9 +73,9 @@ class SignUp extends Component {
   };
 
   loadProviders = () => {
-    get(Api.listProviders, resp => {
-      const jsonResponse = JSON.parse(resp);
-      if (jsonResponse) {
+    get(Api.listProviders).then(resp => {
+      if (resp) {
+        const jsonResponse = resp.data;
         const providers = jsonResponse.message;
         const providerContent = document.getElementById("providerContent");
 
@@ -119,12 +118,11 @@ class SignUp extends Component {
     userParams.confirmationCode = this.state.confirmationCode;
     userParams.providerId = selectedProvider;
 
-    put(Api.updateUser, userParams, resp => {
-      const result = JSON.parse(resp);
-      if (result.code === 200) {
+    put(Api.updateUser, userParams).then(resp => {
+      if (resp && resp.data.code === 200) {
         this.getUserInfo();
       } else {
-        this.setState({ errorMessage: result.message });
+        this.setState({ errorMessage: resp.data.message });
       }
     });
   };
@@ -133,13 +131,13 @@ class SignUp extends Component {
     const getUserInfoAPI = `${Api.getUserInfo}${encodeURIComponent(
       this.state.email
     )}`;
-    get(getUserInfoAPI, resp => {
-      const result = JSON.parse(resp);
-      if (result.code === 200 || result.code === 304) {
+    get(getUserInfoAPI).then(resp => {
+      if (resp && (resp.data.code === 200 || resp.data.code === 304)) {
         showMessageOK("", "Bem vindo ao HelpNet CMS!", () => {
-          const userInfoData = result.userInfo;
+          const userInfoData = resp.data.userInfo;
           localStorage.setItem("isLogged", true);
           localStorage.setItem("userInfo", JSON.stringify(userInfoData));
+          localStorage.setItem("token", JSON.stringify(userInfoData.token));
           this.props.history.push("/home");
         });
       } else {

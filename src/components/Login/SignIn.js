@@ -21,6 +21,12 @@ class SignIn extends Component {
     };
   }
 
+  _handleKeyDown = e => {
+    if (e.key === "Enter") {
+      this.signInHandler();
+    }
+  };
+
   signInHandler = () => {
     this.setState({ errorMessage: "", isLoading: true });
     let { email, password } = this.state;
@@ -57,21 +63,17 @@ class SignIn extends Component {
       this.state.email
     )}`;
 
-    get(getUserInfoAPI, resp => {
-      if (resp) {
-        const result = JSON.parse(resp);
-        if (result.code === 200 || result.code === 304) {
-          const userInfoData = result.userInfo;
-          if (userInfoData.status === "Ativo") {
-            localStorage.setItem("isLogged", true);
-            localStorage.setItem("userInfo", JSON.stringify(userInfoData));
-            this.props.history.push("/home");
-          } else {
-            this.setState({ pendingRegister: true, userInfo: userInfoData });
-            this.loadProviders();
-          }
+    get(getUserInfoAPI).then(resp => {
+      if (resp && (resp.data.code === 200 || resp.data.code === 304)) {
+        const userInfoData = resp.data.userInfo;
+        if (userInfoData.status === "Ativo") {
+          localStorage.setItem("isLogged", true);
+          localStorage.setItem("token", userInfoData.token);
+          localStorage.setItem("userInfo", JSON.stringify(userInfoData));
+          this.props.history.push("/home");
         } else {
-          this.handleGenericError();
+          this.setState({ pendingRegister: true, userInfo: userInfoData });
+          this.loadProviders();
         }
       } else {
         this.handleGenericError();
@@ -92,9 +94,9 @@ class SignIn extends Component {
   };
 
   loadProviders = () => {
-    get(Api.listProviders, resp => {
-      const jsonResponse = JSON.parse(resp);
-      if (jsonResponse) {
+    get(Api.listProviders).then(resp => {
+      if (resp) {
+        const jsonResponse = resp.data;
         const providers = jsonResponse.message;
         const providerContent = document.getElementById("providerContent");
 
@@ -137,12 +139,11 @@ class SignIn extends Component {
     userParams.confirmationCode = this.state.confirmationCode;
     userParams.providerId = selectedProvider;
 
-    put(Api.updateUser, userParams, resp => {
-      const result = JSON.parse(resp);
-      if (result.code === 200) {
+    put(Api.updateUser, userParams).then(resp => {
+      if (resp && resp.data.code === 200) {
         this.getUserInfo();
       } else {
-        this.setState({ errorMessage: result.message });
+        this.setState({ errorMessage: resp.data.message });
       }
     });
   };
@@ -178,6 +179,7 @@ class SignIn extends Component {
                 onChange={event =>
                   this.setState({ password: event.target.value })
                 }
+                onKeyDown={this._handleKeyDown}
               />
 
               {this.state.isLoading ? (

@@ -17,7 +17,6 @@ const apis = {
   listOsByProviderIdAndSituationClosed:
     "api/os/listOsByProviderIdAndSituationClosed?providerId=",
   changeSituation: "api/os/changeSituation",
-  associateUser: "api/os/associateUser",
   listByProviderId: "api/user/listByProviderId?providerId=",
   getOsByNumber: "api/os/getOsByNumber?numberOS="
 };

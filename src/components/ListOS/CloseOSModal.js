@@ -5,10 +5,7 @@ import "../../styles/components/modal.scss";
 import { post } from "../../util/RequestUtil";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Spinner from "../ui/Spinner";
-import {
-  unavailableServiceAlert,
-  showMessageOK
-} from "../../util/AlertDialogUtil";
+import { showMessageOK } from "../../util/AlertDialogUtil";
 import finish from "../../imgs/finished.png";
 
 const changeSituation = API.changeSituation;
@@ -91,20 +88,13 @@ class AssociateUserModal extends React.Component {
       let url = `${changeSituation}`;
       const body = this.builderEventOs(this.state.os);
 
-      post(url, body, resp => {
-        if (resp !== "") {
-          const jsonResponse = JSON.parse(resp);
-          if (jsonResponse && jsonResponse.code === 200) {
-            this.closeModal();
-            this.successChangeSituationOS();
-            this.setState({ isLoading: false });
-          } else {
-            this.failUpdateOS();
-          }
+      post(url, body).then(resp => {
+        if (resp && resp.data.code === 200) {
+          this.closeModal();
+          this.successChangeSituationOS();
+          this.setState({ isLoading: false });
         } else {
-          unavailableServiceAlert(() => {
-            this.setState({ isLoading: false });
-          });
+          this.failUpdateOS();
         }
       });
     }

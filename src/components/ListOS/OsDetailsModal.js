@@ -84,9 +84,9 @@ class OsDetailsModal extends React.Component {
   getOsByNumber() {
     const os = this.props.os;
     const url = `${getOsByNumber}${os.Número}`;
-    get(url, resp => {
-      if (resp !== "") {
-        const jsonResp = JSON.parse(resp);
+    get(url).then(resp => {
+      if (resp) {
+        const jsonResp = resp.data;
         const osSelected = jsonResp.data;
         const columns = this.getColumnsOS(osSelected.event);
         const events = this.getDataOS(osSelected.event);
