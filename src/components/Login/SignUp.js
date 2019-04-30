@@ -136,8 +136,8 @@ class SignUp extends Component {
         showMessageOK("", "Bem vindo ao HelpNet CMS!", () => {
           const userInfoData = resp.data.userInfo;
           localStorage.setItem("isLogged", true);
+          localStorage.setItem("token", userInfoData.token);
           localStorage.setItem("userInfo", JSON.stringify(userInfoData));
-          localStorage.setItem("token", JSON.stringify(userInfoData.token));
           this.props.history.push("/home");
         });
       } else {
