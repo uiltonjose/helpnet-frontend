@@ -38,7 +38,6 @@ class SignIn extends Component {
         this.getUserInfo();
       })
       .catch(e => {
-        console.log("deu erro no catch", e);
         let message;
         const errorCode = e.code;
         const code = errorCode && errorCode.split("/")[1];
