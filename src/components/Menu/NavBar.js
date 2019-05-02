@@ -76,11 +76,11 @@ class NavBar extends Component {
                     Listar Notificação
                   </Link>
                 </li>
-                <li className="nav-item">
+                {/* <li className="nav-item">
                   <Link className="nav-link" to={"/myData"} id="as">
                     Meus Dados
                   </Link>
-                </li>
+                </li> */}
               </ul>
               <div id="logout-group">
                 <p id="providerLogin">{this.state.providerLogin}</p>

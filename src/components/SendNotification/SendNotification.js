@@ -241,23 +241,28 @@ class SendNotification extends Component {
       this.setState({ errorMessage, isLoading: false });
       window.scrollTo(0, 0);
     } else {
-      post(sendNotificationAPI, bodyNotification).then(resp => {
-        let messageAlert;
-        const statusCode = resp && resp.data.code;
-        if (statusCode === 200) {
-          messageAlert = "Notificações enviadas com sucesso.";
-        } else if (statusCode === 406) {
-          messageAlert =
-            "Um ou mais clientes não estão logados no Aplicativo, apenas usuários logados conseguem receber as notificações em forma de Push. Porém a mensagem será exibida na tela de notificação.";
-        } else {
-          messageAlert =
-            "Erro ao tentar enviar notificações, por favor tente novamente.";
-        }
-        showMessageOK("", messageAlert, () => {
-          window.location.reload();
-          this.setState({ isLoading: false });
+      post(sendNotificationAPI, bodyNotification)
+        .then(resp => {
+          let messageAlert;
+          if (resp.data.internalCode === 406) {
+            messageAlert =
+              "Um ou mais clientes não estão logados no Aplicativo, apenas usuários logados conseguem receber as notificações em forma de Push. Porém a mensagem será exibida na tela de notificação.";
+          } else {
+            if (resp.data.statusCode === 200) {
+              messageAlert = "Notificações enviadas com sucesso.";
+            } else {
+              messageAlert =
+                "Erro ao tentar enviar notificações, por favor tente novamente.";
+            }
+          }
+          showMessageOK("", messageAlert, () => {
+            window.location.reload();
+            this.setState({ isLoading: false });
+          });
+        })
+        .catch(e => {
+          console.log("aquii", e);
         });
-      });
     }
   };
 
