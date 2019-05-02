@@ -261,7 +261,13 @@ class SendNotification extends Component {
           });
         })
         .catch(e => {
-          console.log("aquii", e);
+          console.error(e);
+          const messageAlert =
+            "Erro ao tentar enviar notificações, por favor tente novamente.";
+          showMessageOK("", messageAlert, () => {
+            window.location.reload();
+            this.setState({ isLoading: false });
+          });
         });
     }
   };
