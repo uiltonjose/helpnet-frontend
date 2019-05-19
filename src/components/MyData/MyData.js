@@ -8,8 +8,6 @@ import { get } from "../../util/RequestUtil";
 const FileUtil = require("../../util/FileUtil");
 const syncronizedCustomersFromFile = Api.syncronizedCustomersFromFile;
 
-let fileRead;
-
 class MyData extends Component {
   constructor(props) {
     super(props);
@@ -31,40 +29,70 @@ class MyData extends Component {
   componentWillMount() {
     const savedUserInfo = localStorage.getItem("userInfo");
     const userInfo = JSON.parse(savedUserInfo);
-
     this.setState({
       userInfo
     });
   }
+
   onClickHandler = () => {
-    fileRead = new FileReader();
-    fileRead.onloadend = this.handleFileRead;
-    fileRead.readAsText(this.state.selectedFile);
+    this.setState({ isLoading: true });
+    if (FileUtil.getExtensionFromFile(this.state.selectedFileName) === "zip") {
+      FileUtil.getContentFromFileZipped(this.state.selectedFile).then(
+        content => {
+          this.handleFileRead(content);
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    } else {
+      FileUtil.getContentFromFile(this.state.selectedFile).then(
+        content => {
+          this.handleFileRead(content);
+        },
+        error => {
+          console.log(error);
+        }
+      );
+    }
   };
 
-  handleFileRead = e => {
-    this.setState({ isLoading: true });
-    console.log(fileRead.result);
-    const content = fileRead.result;
-    let linhas = content.split("\n");
-    let dataFromFile = "";
-    let i = 0;
-    while (i < linhas.length && dataFromFile === "") {
-      const lineIdentifier = "INSERT INTO `sis_cliente` VALUES (";
-      if (linhas[i].substring(0, 34) === lineIdentifier) {
-        dataFromFile = linhas[i];
+  handleFileRead = content => {
+    if (content === null) {
+      failSyncronizedCustomers(() => {
+        this.setState({ isLoading: false });
+      });
+    } else {
+      let linhas = content.split("\n");
+      let dataFromFile = "";
+      let i = 0;
+
+      while (i < linhas.length && dataFromFile === "") {
+        const lineIdentifier = "INSERT INTO `sis_cliente` VALUES (";
+        if (linhas[i].substring(0, 34) === lineIdentifier) {
+          dataFromFile = linhas[i];
+        }
+        i++;
       }
-      i++;
+      if (dataFromFile === "") {
+        failSyncronizedCustomers(() => {
+          this.setState({ isLoading: false });
+        });
+      } else {
+        const fileName = FileUtil.getFileName(
+          this.state.userInfo["provedor_id"]
+        );
+        FileUtil.uploadFileToAWS(fileName, dataFromFile).then(
+          result => {
+            console.log(result);
+            this.syncronizedCustomersFromFile();
+          },
+          error => {
+            console.log(error);
+          }
+        );
+      }
     }
-
-    const fileName = FileUtil.getFileName(this.state.userInfo["provedor_id"]);
-
-    FileUtil.uploadFileToAWS(fileName, dataFromFile).then(
-      result => {
-        this.syncronizedCustomersFromFile();
-      },
-      error => {}
-    );
   };
 
   syncronizedCustomersFromFile = () => {
@@ -127,6 +155,7 @@ class MyData extends Component {
                 <div className="custom-file">
                   <input
                     type="file"
+                    accept=".zip"
                     className="custom-file-input"
                     id="inputGroupFile01"
                     aria-describedby="inputGroupFileAddon01"

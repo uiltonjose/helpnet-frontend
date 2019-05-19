@@ -17,6 +17,42 @@ const getFileNameZip = fileName => {
   return fileNameZip;
 };
 
+const getContentFromFileZipped = file => {
+  return new Promise(resolve => {
+    var zipFile = new JSZip();
+    zipFile.loadAsync(file).then(
+      zip => {
+        zip
+          .file(Object.keys(zip.files)[0])
+          .async("string")
+          .then(content => {
+            resolve(content);
+          });
+      },
+      error => {
+        console.log(error);
+        resolve(null);
+      }
+    );
+  });
+};
+
+const getExtensionFromFile = fileName => {
+  return fileName.split(".")[1];
+};
+
+const getContentFromFile = file => {
+  return new Promise(resolve => {
+    let fileRead;
+    fileRead = new FileReader();
+    fileRead.onloadend = () => {
+      const content = fileRead.result;
+      resolve(content);
+    };
+    fileRead.readAsText(file);
+  });
+};
+
 const uploadFileToAWS = (fileName, data) => {
   return new Promise(resolve => {
     let zip = new JSZip();
@@ -42,7 +78,6 @@ const uploadFileToAWS = (fileName, data) => {
             resolve(error);
           } else {
             resolve("Arquivo atualizado com sucesso");
-            console.log("Arquivo atualizado com sucesso");
           }
         });
       });
@@ -51,5 +86,8 @@ const uploadFileToAWS = (fileName, data) => {
 
 module.exports = {
   uploadFileToAWS: uploadFileToAWS,
-  getFileName: getFileName
+  getFileName: getFileName,
+  getContentFromFile: getContentFromFile,
+  getContentFromFileZipped: getContentFromFileZipped,
+  getExtensionFromFile: getExtensionFromFile
 };

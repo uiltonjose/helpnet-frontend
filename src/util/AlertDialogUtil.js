@@ -68,7 +68,7 @@ export const failSyncronizedCustomers = okListener => {
   confirmAlert({
     title: "",
     message:
-      "Falha ao tentar carregar a lista das Ordem de Serviços. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+      "Falha ao tentar sincronizar o arquivo de backup. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
     buttons: [
       {
         label: "OK",
