@@ -3,24 +3,21 @@ const DateUtil = require("../util/DateUtil");
 const JSZip = require("jszip");
 
 AWS.config.update({
-  accessKeyId: "AKIAQAFUBEM2K6HFKQHM", //process.env.AWS_ACCESS_KEY,
-  secretAccessKey: "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" //process.env.AWS_SECRET_ACCESS_KEY
+  accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY,
+  secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY
 });
 
 const getFileName = providerId => {
-  let fileName = `${providerId}_${DateUtil.getDateToFileName()}.txt`;
-  return fileName;
+  return `${providerId}_${DateUtil.getDateToFileName()}.txt`;  
 };
 
 const getFileNameZip = fileName => {
-  let fileNameZip = fileName.split(".")[0] + ".zip";
-  return fileNameZip;
-};
+  return fileName.split(".")[0] + ".zip";
+  };
 
 const getContentFromFileZipped = file => {
   return new Promise(resolve => {
-    var zipFile = new JSZip();
-    zipFile.loadAsync(file).then(
+      new JSZip().loadAsync(file).then(
       zip => {
         zip
           .file(Object.keys(zip.files)[0])
@@ -43,11 +40,9 @@ const getExtensionFromFile = fileName => {
 
 const getContentFromFile = file => {
   return new Promise(resolve => {
-    let fileRead;
-    fileRead = new FileReader();
+    const fileRead = new FileReader();
     fileRead.onloadend = () => {
-      const content = fileRead.result;
-      resolve(content);
+      resolve(fileRead.result);
     };
     fileRead.readAsText(file);
   });
@@ -55,7 +50,7 @@ const getContentFromFile = file => {
 
 const uploadFileToAWS = (fileName, data) => {
   return new Promise(resolve => {
-    let zip = new JSZip();
+    const zip = new JSZip();
     zip.file(fileName, data);
     zip
       .generateAsync({
@@ -67,7 +62,7 @@ const uploadFileToAWS = (fileName, data) => {
       })
       .then(base64 => {
         const params = {
-          Bucket: "providerbackup", //process.env.AWS_S3_NAME,
+          Bucket: process.env.REACT_APP_AWS_S3_NAME,
           Key: getFileNameZip(fileName),
           Body: base64
         };

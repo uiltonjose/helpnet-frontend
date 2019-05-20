@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import Api from "../../util/Endpoints";
-import { unavailableServiceAlert } from "../../util/AlertDialogUtil";
-import { failSyncronizedCustomers } from "../../util/AlertDialogUtil";
-import { showMessageOK } from "../../util/AlertDialogUtil";
+import {
+  unavailableServiceAlert,
+  failSyncronizedCustomers,
+  showMessageOK
+} from "../../util/AlertDialogUtil";
 import Spinner from "../ui/Spinner";
 import { get } from "../../util/RequestUtil";
 const Enum = require("../../model/Enum");
@@ -67,14 +69,14 @@ class MyData extends Component {
         this.setState({ isLoading: false });
       });
     } else {
-      let linhas = content.split("\n");
+      let lines = content.split("\n");
       let dataFromFile = "";
       let i = 0;
 
-      while (i < linhas.length && dataFromFile === "") {
+      while (i < lines.length && dataFromFile === "") {
         const lineIdentifier = "INSERT INTO `sis_cliente` VALUES (";
-        if (linhas[i].substring(0, 34) === lineIdentifier) {
-          dataFromFile = linhas[i];
+        if (lines[i].substring(0, 34) === lineIdentifier) {
+          dataFromFile = lines[i];
         }
         i++;
       }
@@ -104,8 +106,9 @@ class MyData extends Component {
     this.setState({ providerId });
     const url = `${syncronizedCustomersFromFile}${providerId}`;
     get(url).then(resp => {
+      console.log(resp);
       if (resp) {
-        if ((resp.code = 200)) {
+        if (resp.status === 200) {
           showMessageOK(
             "Atualização concluída",
             "A atualização dos clientes foi realizada com sucesso",
