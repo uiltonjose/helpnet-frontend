@@ -5,6 +5,7 @@ import { failSyncronizedCustomers } from "../../util/AlertDialogUtil";
 import { showMessageOK } from "../../util/AlertDialogUtil";
 import Spinner from "../ui/Spinner";
 import { get } from "../../util/RequestUtil";
+const Enum = require("../../model/Enum");
 const FileUtil = require("../../util/FileUtil");
 const syncronizedCustomersFromFile = Api.syncronizedCustomersFromFile;
 
@@ -36,7 +37,10 @@ class MyData extends Component {
 
   onClickHandler = () => {
     this.setState({ isLoading: true });
-    if (FileUtil.getExtensionFromFile(this.state.selectedFileName) === "zip") {
+    if (
+      FileUtil.getExtensionFromFile(this.state.selectedFileName) ===
+      Enum.fileTypeToUpload.ZIP
+    ) {
       FileUtil.getContentFromFileZipped(this.state.selectedFile).then(
         content => {
           this.handleFileRead(content);
