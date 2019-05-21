@@ -63,3 +63,17 @@ export const failLoadOsList = okListener => {
     ]
   });
 };
+
+export const failSyncronizedCustomers = okListener => {
+  confirmAlert({
+    title: "",
+    message:
+      "Falha ao tentar sincronizar o arquivo de backup. Por favor tente novamente. Caso o problema volte ocorrer, entre em contato com o suporte.",
+    buttons: [
+      {
+        label: "OK",
+        onClick: () => okListener()
+      }
+    ]
+  });
+};

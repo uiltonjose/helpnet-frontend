@@ -18,7 +18,9 @@ const apis = {
     "api/os/listOsByProviderIdAndSituationClosed?providerId=",
   changeSituation: "api/os/changeSituation",
   listByProviderId: "api/user/listByProviderId?providerId=",
-  getOsByNumber: "api/os/getOsByNumber?numberOS="
+  getOsByNumber: "api/os/getOsByNumber?numberOS=",
+  syncronizedCustomersFromFile:
+    "api/synchronize/syncronizedCustomersFromFile?providerId="
 };
 
 export default apis;
